@@ -3,28 +3,27 @@ namespace app\controller;
 
 use think\facade\Request;
 use app\BaseController;
-use app\model\User;
+use app\admin\model\UserModel;
 // 
 
 class Index extends BaseController
 {
+    /**
+     * @Apidoc\Title("管理首页")
+     * @Apidoc\Header(ref="headerAdmin")
+     */
     public function index()
     {
-        // $user           = new User;
-        // $user->username     = 'wxy';
-        // $user->password    = md5('php@qq.com');
-        // $user->save();
-        
-        // $user = User::where('Id',56)
-        //  //   ->where('name','thinkphp')
-        //     ->find();
-        // $user->name     = 'thinkphp1';
-        // $user->email    = 'thinkphp@qq.com';
-        // $user->save();
+        $str='ok';
+        $user = UserModel::find(1);
 
-        //$data = User::where('id','<',10000)->select();
-		// 返回数据
-		return success('hello');
+        //$res= $user->roles()->save(['rolename'=>'角色1']);
+
+        // $roles = $user->roles;
+        // foreach ($roles as $role) {
+        //     $str = $role->rolename . $str .'<br/>';
+        // }
+        return success($user);
     }
 
     public function hello($name = 'ThinkPHP6')
