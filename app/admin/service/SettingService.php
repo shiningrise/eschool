@@ -16,7 +16,7 @@ use app\admin\cache\SettingCache;
 class SettingService
 {
     // 默认设置id
-    private static $id = 1;
+    private static $id = 2;
     private static $cache_key = 'cache';
 
     /**

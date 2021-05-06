@@ -7,6 +7,8 @@ use app\admin\model\UserModel;
 use app\admin\service\UserService;
 use app\admin\validate\UserValidate;
 use hg\apidoc\annotation as Apidoc;
+use hg\apidoc\annotation\Field;
+use hg\apidoc\annotation\AddField;
 
 /**
  * @Apidoc\Title("用户管理")
