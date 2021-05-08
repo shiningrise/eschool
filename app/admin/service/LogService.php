@@ -29,9 +29,9 @@ class LogService
      */
     public static function list($where = [], $page = 1, $limit = 10, $order = [], $field = '')
     {
-        if (empty($field)) {
-            $field = 'id,user_id,module_id,request_method,request_ip,request_region,request_isp,response_code,response_msg,create_time';
-        }
+        // if (empty($field)) {
+        //     $field = 'id,user_id,module_id,request_method,request_ip,request_region,request_isp,response_code,response_msg,create_time';
+        // }
 
         $where[] = ['is_delete', '=', 0];
 
@@ -54,19 +54,19 @@ class LogService
 
         foreach ($list as $k => $v) {
             $list[$k]['username'] = '';
-            $list[$k]['nickname'] = '';
-            $admin_user = AdminUserService::info($v['admin_user_id']);
+            $list[$k]['fullname'] = '';
+            $admin_user = UserService::info($v['user_id']);
             if ($admin_user) {
                 $list[$k]['username'] = $admin_user['username'];
-                $list[$k]['nickname'] = $admin_user['nickname'];
+                $list[$k]['fullname'] = $admin_user['fullname'];
             }
 
-            $list[$k]['menu_name'] = '';
-            $list[$k]['menu_url']  = '';
-            $admin_menu = AdminMenuService::info($v['admin_menu_id']);
-            if ($admin_menu) {
-                $list[$k]['menu_name'] = $admin_menu['menu_name'];
-                $list[$k]['menu_url']  = $admin_menu['menu_url'];
+            $list[$k]['module_name'] = '';
+            $list[$k]['module_url']  = '';
+            $module = ModuleService::info($v['module_id']);
+            if ($module) {
+                $list[$k]['module_name'] = $module['name'];
+                $list[$k]['module_url']  = $module['url'];
             }
         }
 
@@ -106,22 +106,22 @@ class LogService
             }
 
             $log['username'] = '';
-            $log['nickname'] = '';
-            $admin_user = AdminUserService::info($log['admin_user_id']);
-            if ($admin_user) {
-                $log['username'] = $admin_user['username'];
-                $log['nickname'] = $admin_user['nickname'];
+            $log['fullname'] = '';
+            $user = UserService::info($log['user_id']);
+            if ($user) {
+                $log['username'] = $user['username'];
+                $log['fullname'] = $user['fullname'];
             }
 
             $log['menu_name'] = '';
             $log['menu_url']  = '';
-            $admin_menu = AdminMenuService::info($log['admin_menu_id']);
-            if ($admin_menu) {
-                $log['menu_name'] = $admin_menu['menu_name'];
-                $log['menu_url']  = $admin_menu['menu_url'];
+            $module = ModuleService::info($log['module_id']);
+            if ($module) {
+                $log['module_name'] = $module['name'];
+                $log['module_url']  = $module['url'];
             }
 
-            AdminUserLogCache::set($id, $log);
+            LogCache::set($id, $log);
         }
 
         return $log;
@@ -150,8 +150,7 @@ class LogService
             unset($request_param['old_password']);
         }
 
-        //$param['module_id']        = $module['id'];
-        unset($param['id'] );
+        $param['module_id']        = $module['id'];
         $param['request_ip']       = $ip_info['ip'];
         $param['request_country']  = $ip_info['country'];
         $param['request_province'] = $ip_info['province'];
@@ -193,7 +192,7 @@ class LogService
 
         $param['id'] = $id;
 
-        AdminUserLogCache::del($id);
+        LogCache::del($id);
 
         return $param;
     }
@@ -220,47 +219,9 @@ class LogService
 
         $update['id'] = $id;
 
-        AdminUserLogCache::del($id);
+        LogCache::del($id);
 
         return $update;
-    }
-
-    /**
-     * 日志管理清除
-     *
-     * @param integer $param 清除条件
-     * 
-     * @return array
-     */
-    public static function clear($param)
-    {
-        $admin_user_id = $param['admin_user_id'];
-        $admin_menu_id = $param['admin_menu_id'];
-        $clear_date    = $param['clear_date'];
-
-        $where = [];
-        
-        if ($admin_user_id) {
-            $where[] = ['admin_user_id', '=', $admin_user_id];
-        }
-        if ($admin_menu_id) {
-            $where[] = ['admin_menu_id', '=', $admin_menu_id];
-        }
-        if ($clear_date) {
-            $sta_date = $clear_date[0];
-            $end_date = $clear_date[1];
-
-            $where[] = ['create_time', '>=', $sta_date . ' 00:00:00'];
-            $where[] = ['create_time', '<=', $end_date . ' 23:59:59'];
-        }
-
-        $res = Db::name('log')
-            ->where($where)
-            ->delete(true);
-
-        $data['count'] = $res;
-
-        return $data;
     }
 
     /**

@@ -72,27 +72,20 @@ class ModuleService{
         if (empty($id)) {
             $id = request_pathinfo();
         }
+        if (is_numeric($id)) {
+            $where[] = ['id', '=',  $id];
+        } else {
+            $where[] = ['url', '=',  $id];
+        }
 
-        $module = ModuleCache::get($id);
+        $module = Db::name('module')
+            ->where($where)
+            ->find();
 
         if (empty($module)) {
-            if (is_numeric($id)) {
-                $where[] = ['id', '=',  $id];
-            } else {
-                $where[] = ['url', '=',  $id];
-            }
-
-            $module = Db::name('module')
-                ->where($where)
-                ->find();
-
-            if (empty($module)) {
-                //exception('菜单不存在：' . $admin_menu_id);
-                $module['url']=request_pathinfo();
-                Db::name('module')->insert($module);
-            }
-
-            ModuleCache::set($id, $module);
+            //exception('菜单不存在：' . $admin_menu_id);
+            $module['url']=request_pathinfo();
+            Db::name('module')->insert($module);
         }
         return $module;
     }

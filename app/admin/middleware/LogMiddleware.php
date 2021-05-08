@@ -30,9 +30,8 @@ class LogMiddleware
         $is_log = Config::get('admin.is_log');
 
         if ($is_log) {
-            $id = user_id();
-
-            if ($id) {
+            $user_id = user_id();
+            if ($user_id) {
                 $response_data = $response->getData();
                 
                 if (isset($response_data['code'])) {
@@ -46,7 +45,7 @@ class LogMiddleware
                     }
                 }
                 
-                $log['id'] = $id;
+                $log['user_id'] = $user_id;
                 LogService::add($log);
             }
         }
