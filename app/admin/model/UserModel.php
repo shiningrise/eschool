@@ -77,7 +77,7 @@ class UserModel extends Model
     }
 
     /**
-     * @Field("admin_user_id,password")
+     * @Field("id,password")
      */
     public function pwd()
     {

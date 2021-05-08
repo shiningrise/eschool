@@ -35,6 +35,7 @@ class UserValidate extends Validate
         'add'    => ['username','fullname','beizhu'],
         'edit'   => ['id', 'username','fullname','beizhu'],
         'del'   => ['id'],
+        'pwd'   => ['id'],
     ];
 
     // 自定义验证规则：角色是否存在

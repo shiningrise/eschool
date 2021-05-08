@@ -51,20 +51,20 @@ class Permission extends BaseController
     }
 
     /**
-     * @Apidoc\Title("权限添加")
+     * @Apidoc\Title("添加")
      * @Apidoc\Method("POST")
-     * @Apidoc\Param("permission_name", type="string", default="", desc="权限名称")
-     * @Apidoc\Param("permission_code", type="string", default="", desc="权限代码")
-     * @Apidoc\Param("xh", type="int", default="0", desc="序号")
+     * @Apidoc\Param("name", type="string", default="", desc="名称")
+     * @Apidoc\Param("code", type="string", default="", desc="代码")
+     * @Apidoc\Param("sort", type="int", default="0", desc="序号")
      * @Apidoc\Param("parent_id", type="int", default="0", desc="父节点ID")
      * @Apidoc\Returned(ref="return")
      */
     public function add()
     {
-        $param['permission_name']        = Request::param('permission_name/s', '');
-        $param['permission_code']        = Request::param('permission_code/s', '');
-        $param['xh']                     = Request::param('xh/s', '');
-        $param['parent_id']              = Request::param('parent_id/d', '');
+        $param['name']        = Request::param('name/s', '');
+        $param['code']        = Request::param('code/s', '');
+        $param['sort']        = Request::param('sort/s', '');
+        $param['parent_id']   = Request::param('parent_id/d', '');
         validate(PermissionValidate::class)->scene('add')->check($param);
         $data = PermissionService::add($param);
 
@@ -72,22 +72,23 @@ class Permission extends BaseController
     }
 
     /**
-     * @Apidoc\Title("权限修改")
+     * @Apidoc\Title("修改")
      * @Apidoc\Method("POST")
      * @Apidoc\Header(ref="headerAdmin")
      * @Apidoc\Param("id", type="int", default="1", desc="id")
-     * @Apidoc\Param("permission_name", type="string", default="", desc="权限名称")
-     * @Apidoc\Param("permission_code", type="string", default="", desc="权限代码")
-     * @Apidoc\Param("parent_id", type="int", default="0", desc="父节点id")
+     * @Apidoc\Param("name", type="string", default="", desc="名称")
+     * @Apidoc\Param("code", type="string", default="", desc="代码")
+     * @Apidoc\Param("sort", type="int", default="0", desc="序号")
+     * @Apidoc\Param("parent_id", type="int", default="0", desc="父节点ID")
      * @Apidoc\Returned(ref="return")
      */
     public function edit()
     {
-        $param['id']                     = Request::param('id/d', '');
-        $param['permission_name']        = Request::param('permission_name/s', '');
-        $param['permission_code']        = Request::param('permission_code/s', '');
-        $param['xh']                     = Request::param('xh/s', '');
-        $param['parent_id']              = Request::param('parent_id/d', '');
+        $param['id']          = Request::param('id/d', '');
+        $param['name']        = Request::param('name/s', '');
+        $param['code']        = Request::param('code/s', '');
+        $param['sort']        = Request::param('sort/s', '');
+        $param['parent_id']   = Request::param('parent_id/d', '');
 
         validate(PermissionValidate::class)->scene('edit')->check($param);
 
@@ -96,10 +97,9 @@ class Permission extends BaseController
         return success($data);
     }
 
-        /**
+    /**
      * @Apidoc\Title("权限删除")
      * @Apidoc\Method("POST")
-     * @Apidoc\Header(ref="headerAdmin")
      * @Apidoc\Param("id", type="int", default="1", desc="id")
      * @Apidoc\Returned(ref="return")
      */

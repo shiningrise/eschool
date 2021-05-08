@@ -9,41 +9,39 @@
 namespace app\admin\validate;
 
 use think\Validate;
-use app\admin\service\PermissionService;
+use app\admin\service\ModuleService;
 
-class PermissionValidate extends Validate
+class ModuleValidate extends Validate
 {
     // 验证规则
     protected $rule = [
         'id'          => ['require', 'checkId'],
         'name'        => ['require'],
-        'code'        => ['require'],
         'parent_id'   => ['require'],
     ];
 
     // 错误信息
     protected $message = [
-        'id.require' => '缺少参数：权限ID',
-        'name.require'   => '请输入权限名称',
-        'code.require'   => '请输入权限代码',
-        'parent_id.require'         => '请输入父权限ID',
+        'id.require' => '缺少参数：ID',
+        'name.require'   => '请输入名称',
+        'parent_id.require'         => '请输入父ID',
     ];
 
     // 验证场景
     protected $scene = [
         'id'     => ['id'],
         'info'   => ['id'],
-        'add'    => ['name','code','parent_id'],
-        'edit'   => ['id', 'name','code','parent_id'],
+        'add'    => ['name','parent_id'],
+        'edit'   => ['id', 'name','parent_id'],
         'del'    => ['id'],
     ];
 
-    // 自定义验证规则：角色是否存在
+    // 自定义验证规则：是否存在
     protected function checkId($value, $rule, $data = [])
     {
         $id = $value;
 
-        $data = PermissionService::info($id);
+        $data = ModuleService::info($id);
 
         return true;
     }

@@ -27,11 +27,11 @@ class PermissionService{
     public static function list($where = [], $page = 1, $limit = 10,  $order = [], $field = '')
     {
         if (empty($field)) {
-            $field = 'id,permission_code,permission_name,parent_id,xh';
+            $field = 'id,code,name,parent_id,sort,remark';
         }
 
         if (empty($order)) {
-            $order = ['xh' => 'asc'];
+            $order = ['sort' => 'asc'];
         }
 
         $where[] = [];
@@ -61,9 +61,9 @@ class PermissionService{
     }
 
     /**
-     * 角色信息
+     * 权限信息
      *
-     * @param integer $id 角色id
+     * @param integer $id 权限id
      * 
      * @return array
      */

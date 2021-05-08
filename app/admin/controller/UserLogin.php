@@ -76,11 +76,11 @@ class UserLogin
      */
     public function logout()
     {
-        $param['user_id'] = user_id();
+        $param['id'] = user_id();
 
         validate(UserValidate::class)->scene('id')->check($param);
 
-        $data = LoginService::logout($param['user_id']);
+        $data = LoginService::logout($param['id']);
 
         return success($data, '退出成功');
     }

@@ -89,7 +89,7 @@ class Role extends BaseController
         validate(RoleValidate::class)->scene('edit')->check($param);
 
         $data = RoleService::edit($param);
-
+     //   excption($param)
         return success($data);
     }
 

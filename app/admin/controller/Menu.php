@@ -66,8 +66,9 @@ class Menu extends BaseController
         $param['menu_url']          = Request::param('menu_url/s', '');
         $param['menu_icon']         = Request::param('menu_icon/s', '');
         $param['permission_code']   = Request::param('permission_code/s', '');
-        $param['xh']                = Request::param('xh/d', '');
+        $param['menu_sort']         = Request::param('menu_sort/d', '');
         $param['parent_id']         = Request::param('parent_id/d', '');
+        $param['is_disable']        = Request::param('is_disable/d', '');
         validate(MenuValidate::class)->scene('add')->check($param);
         $data = MenuService::add($param);
 
@@ -94,7 +95,7 @@ class Menu extends BaseController
         $param['menu_url']          = Request::param('menu_url/s', '');
         $param['menu_icon']         = Request::param('menu_icon/s', '');
         $param['permission_code']   = Request::param('permission_code/s', '');
-        $param['xh']                = Request::param('xh/d', '');
+        $param['menu_sort']         = Request::param('menu_sort/d', '');
         $param['parent_id']         = Request::param('parent_id/d', '');
 
         validate(MenuValidate::class)->scene('edit')->check($param);

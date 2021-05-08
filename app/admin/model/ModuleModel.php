@@ -9,9 +9,9 @@ use app\admin\model\RoleModel;
 /**
  * @mixin \think\Model
  */
-class PermissionModel extends Model
+class ModuleModel extends Model
 {
-    protected $name = 'permission';
+    protected $name = 'module';
     // 设置字段信息
     protected $schema = [
         // 'id'          => 'int',

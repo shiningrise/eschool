@@ -81,17 +81,17 @@ class LoginService
      * 
      * @return array
      */
-    public static function logout($user_id)
+    public static function logout($id)
     {
         $update['logout_time'] = datetime();
 
-        Db::name('user')
-            ->where('user_id', $user_id)
-            ->update($update);
+        // Db::name('user')
+        //     ->where('id', $user_id)
+        //     ->update($update);
 
-        $update['user_id'] = $user_id;
+        // $update['id'] = $user_id;
 
-        AdminUserCache::del($user_id);
+        UserCache::del($id);
 
         return $update;
     }

@@ -30,7 +30,16 @@ class User extends BaseController
     {
         $page       = Request::param('page/d', 1);
         $limit      = Request::param('limit/d', 5);
+        $username   = Request::param('username/s', '');
+        $fullname   = Request::param('fullname/s', '');
         $where = [];
+        $where = [];
+        if ($username) {
+            $where[] = ['username', 'like', '%' . $username . '%'];
+        }
+        if ($fullname) {
+            $where[] = ['fullname', 'like', '%' . $fullname . '%'];
+        }
         $order = [];
         $data = UserService::list($where, $page, $limit, $order);
 
@@ -107,6 +116,25 @@ class User extends BaseController
         validate(UserValidate::class)->scene('del')->check($param);
 
         $data = UserService::del($param['id']);
+
+        return success($data);
+    }
+
+       /**
+     * @Apidoc\Title("管理员重置密码")
+     * @Apidoc\Method("POST")
+     * @Apidoc\Header(ref="headerAdmin")
+     * @Apidoc\Param(ref="app\admin\model\UserModel\pwd")
+     * @Apidoc\Returned(ref="return")
+     */
+    public function pwd()
+    {
+        $param['id'] = Request::param('id/d', '');
+        $param['password']      = Request::param('password/s', '');
+
+        validate(UserValidate::class)->scene('pwd')->check($param);
+
+        $data = UserService::pwd($param);
 
         return success($data);
     }

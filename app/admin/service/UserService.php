@@ -139,9 +139,9 @@ class UserService{
             ->where('id', $id)
             ->update($param);
 
-        if (empty($res)) {
-            exception();
-        }
+        // if (empty($res)) {
+        //     exception();
+        // }
 
         $param['id'] = $id;
 
@@ -159,5 +159,34 @@ class UserService{
     {
         Db::table('user')->delete($id);
         return $id;
+    }
+
+        /**
+     * 管理员重置密码
+     *
+     * @param array $param 管理员信息
+     * 
+     * @return array
+     */
+    public static function pwd($param)
+    {
+        $id = $param['id'];
+
+        $update['password']    = md5($param['password']);
+
+        $res = Db::name('user')
+            ->where('id', $id)
+            ->update($update);
+
+        // if (empty($res)) {
+        //     exception();
+        // }
+
+        $update['id'] = $id;
+        $update['password']       = $res;
+
+        UserCache::upd($id);
+
+        return $update;
     }
 }
