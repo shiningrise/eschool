@@ -16,12 +16,6 @@ class Menu extends BaseController
 {
     /**
      * @Apidoc\Title("菜单管理")
-     * @Apidoc\Param("page", type="int", default="1", desc="页码")
-     * @Apidoc\Param("limit", type="int", default="10", desc="pagesize")
-     * @Apidoc\Param("name", type="string", default="", desc="菜单名称")
-     * @Apidoc\Param("url", type="string", default="", desc="菜单url")
-     * @Apidoc\Param("permission_code", type="string", default="", desc="权限代码")
-     * @Apidoc\Param("parent_id", type="int", default="", desc="父菜单ID")
      * @Apidoc\Returned(ref="return"),
      * @Apidoc\Returned("data", type="object", desc="返回数据",
      *      @Apidoc\Returned(ref="returnPaging"),
@@ -30,28 +24,7 @@ class Menu extends BaseController
      */
     public function list()
     {
-        $page               = Request::param('page/d', 1);
-        $limit              = Request::param('limit/d', 5);
-        $name               = Request::param('name/s', '');
-        $url                = Request::param('url/s', '');
-        $permission_code    = Request::param('permission_code/s', '');
-        $parent_id          = Request::param('parent_id/d', -1);
-        $where = [];
-        if ($name) {
-            $where[] = ['name', 'like', '%' . $name . '%'];
-        }
-        if ($url) {
-            $where[] = ['url', 'like', '%' . $url . '%'];
-        }
-        if ($permission_code) {
-            $where[] = ['permission_code', 'like', '%' . $permission_code . '%'];
-        }
-        if ($parent_id!=-1) {
-            $where[] = ['parent_id', '=', $parent_id];
-        }
-        $order = [];
-        $data = MenuService::list($where, $page, $limit, $order);
-
+        $data = MenuService::list();
         return success($data);
     }
 
@@ -115,8 +88,8 @@ class Menu extends BaseController
         $param['url']               = Request::param('url/s', '');
         $param['icon']              = Request::param('icon/s', '');
         $param['permission_code']   = Request::param('permission_code/s', '');
-        $param['sort']              = Request::param('sort/d', '');
-        $param['parent_id']         = Request::param('parent_id/d', '');
+        $param['sort']              = Request::param('sort/d',0);
+        $param['parent_id']         = Request::param('parent_id/d', 0);
 
         validate(MenuValidate::class)->scene('edit')->check($param);
 

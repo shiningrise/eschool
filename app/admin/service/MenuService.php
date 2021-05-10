@@ -10,54 +10,67 @@ namespace app\admin\service;
 
 use think\facade\Db;
 use think\facade\Filesystem;
+use think\facade\Log;
 
 class MenuService{
 
     /**
      * 菜单列表
      *
-     * @param array   $where 条件
-     * @param integer $page  页数
-     * @param integer $limit 数量
-     * @param array   $order 排序
-     * @param string  $field 字段
+     * @param array   $type 条件
      * 
      * @return array 
      */
-    public static function list($where = [], $page = 1, $limit = 10,  $order = [], $field = '')
+    public static function list($type = 'tree')
     {
-        // if (empty($field)) {
-        //     $field = 'id,menu_name,beizhu';
-        // }
-
-        if (empty($order)) {
-            $order = ['id' => 'desc'];
-        }
-
-        //$where[] = [];
+        $order = ['sort'=>'desc','id' => 'asc'];
 
         $count = Db::name('menu')
-            ->where($where)
             ->count('id');
 
         $list = Db::name('menu')
-          //  ->field($field)
-            ->where($where)
-            ->page($page)
-            ->limit($limit)
             ->order($order)
             ->select()
             ->toArray();
-
-        $pages = ceil($count / $limit);
-
-        $data['count'] = $count;
-        $data['pages'] = $pages;
-        $data['page']  = $page;
-        $data['limit'] = $limit;
-        $data['list']  = $list;
-
+        $tree = self::toTree($list, 0);
+        $url  = array_filter(array_column($list, 'url'));
+        sort($url);
+        $menu['tree'] = $tree;
+        $menu['list'] = $list;
+        $menu['url']  = $url;
+        if ($type == 'list') {
+            $data['count'] = count($menu['list']);
+            $data['list']  = $menu['list'];
+        } elseif ($type == 'url') {
+            $data['count'] = count($menu['url']);
+            $data['list']  = $menu['url'];
+        } else {
+            $data['count'] = count($menu['tree']);
+            $data['list']  = $menu['tree'];
+        }
         return $data;
+    }
+
+    /**
+     * 菜单树形获取
+     *
+     * @param array   $admin_menu 所有菜单
+     * @param integer $menu_pid   菜单父级id
+     * 
+     * @return array
+     */
+    public static function toTree($menu, $menu_pid)
+    {
+        $tree = [];
+
+        foreach ($menu as $k => $v) {
+            if ($v['parent_id'] == $menu_pid) {
+                $v['children'] = self::toTree($menu, $v['id']);
+                $tree[] = $v;
+            }
+        }
+
+        return $tree;
     }
 
     /**
