@@ -35,7 +35,15 @@ class Role extends BaseController
     {
         $page       = Request::param('page/d', 1);
         $limit      = Request::param('limit/d', 5);
+        $rolename   = Request::param('rolename/s', '');
+        $beizhu     = Request::param('beizhu/s', '');
         $where = [];
+        if ($rolename) {
+            $where[] = ['rolename', 'like', '%' . $rolename . '%'];
+        }
+        if ($beizhu) {
+            $where[] = ['beizhu', 'like', '%' . $beizhu . '%'];
+        }
         $order = [];
         $data = RoleService::list($where, $page, $limit, $order);
 
