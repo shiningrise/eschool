@@ -34,15 +34,13 @@ class ModuleService{
             $order = ['sort' => 'asc'];
         }
 
-        $where[] = [];
-
         $count = Db::name('module')
-        //    ->where($where)
+            ->where($where)
             ->count('id');
 
         $list = Db::name('module')
             ->field($field)
-         //   ->where($where)
+            ->where($where)
             ->page($page)
             ->limit($limit)
             ->order($order)

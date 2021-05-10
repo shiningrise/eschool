@@ -28,7 +28,25 @@ class Module extends BaseController
     {
         $page       = Request::param('page/d', 1);
         $limit      = Request::param('limit/d', 5);
+
+        $name               = Request::param('name/s', '');
+        $url                = Request::param('url/s', '');
+        $parent_id          = Request::param('parent_id/d', -1);
+        $permission_code    = Request::param('permission_code/s', '');
+
         $where = [];
+        if ($name) {
+            $where[] = ['name', 'like', '%' . $name . '%'];
+        }
+        if ($url) {
+            $where[] = ['url', 'like', '%' . $url . '%'];
+        }
+        if ($permission_code) {
+            $where[] = ['permission_code', 'like', '%' . $permission_code . '%'];
+        }
+        if ($parent_id != -1) {
+            $where[] = ['parent_id', '=', $parent_id];
+        }
         $order = [];
         $data = ModuleService::list($where, $page, $limit, $order);
 

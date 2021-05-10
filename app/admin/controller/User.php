@@ -33,7 +33,6 @@ class User extends BaseController
         $username   = Request::param('username/s', '');
         $fullname   = Request::param('fullname/s', '');
         $where = [];
-        $where = [];
         if ($username) {
             $where[] = ['username', 'like', '%' . $username . '%'];
         }
