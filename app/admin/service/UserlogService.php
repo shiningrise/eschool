@@ -14,7 +14,7 @@ use app\admin\utils\DatetimeUtils;
 use app\admin\cache\LogCache;
 use app\admin\utils\IpInfoUtils;
 
-class LogService
+class UserlogService
 {
     /**
      * 日志管理列表
@@ -39,11 +39,11 @@ class LogService
             $order = ['id' => 'desc'];
         }
 
-        $count = Db::name('log')
+        $count = Db::name('userlog')
             ->where($where)
             ->count('id');
 
-        $list = Db::name('log')
+        $list = Db::name('userlog')
             ->field($field)
             ->where($where)
             ->page($page)
@@ -93,7 +93,7 @@ class LogService
         $log = LogCache::get($id);
 
         if (empty($log)) {
-            $log = Db::name('log')
+            $log = Db::name('userlog')
                 ->where('id', $id)
                 ->find();
 
@@ -162,7 +162,7 @@ class LogService
         $param['request_method']   = Request::method();
         $param['create_time']      = datetime();
 
-        Db::name('log')->strict(false)
+        Db::name('userlog')->strict(false)
             ->insert($param);
     }
 
@@ -182,7 +182,7 @@ class LogService
         $param['request_param'] = serialize($param['request_param']);
         $param['update_time']   = datetime();
 
-        $res = Db::name('log')
+        $res = Db::name('userlog')
             ->where('id', $id)
             ->update($param);
 
@@ -209,7 +209,7 @@ class LogService
         $update['is_delete']   = 1;
         $update['delete_time'] = datetime();
 
-        $res = Db::name('log')
+        $res = Db::name('userlog')
             ->where('id', $id)
             ->update($update);
 
@@ -278,7 +278,7 @@ class LogService
                 $where[] = ['create_time', '<=', $end_time];
             }
 
-            $data = Db::name('log')
+            $data = Db::name('userlog')
                 ->field('id')
                 ->where($where)
                 ->count('id');
@@ -318,7 +318,7 @@ class LogService
             $where[] = ['create_time', '<=', $end_time];
             $group   = "date_format(create_time,'%Y-%m-%d')";
 
-            $log = Db::name('log')
+            $log = Db::name('userlog')
                 ->field($field)
                 ->where($where)
                 ->group($group)
@@ -399,7 +399,7 @@ class LogService
             $where[] = ['create_time', '>=', $sta_time];
             $where[] = ['create_time', '<=', $end_time];
 
-            $log = Db::name('log')
+            $log = Db::name('userlog')
                 ->field($field . ', COUNT(id) as y_data')
                 ->where($where)
                 ->group($group)

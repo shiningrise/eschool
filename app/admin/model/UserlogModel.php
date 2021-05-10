@@ -8,9 +8,9 @@ use think\Model;
 /**
  * @mixin \think\Model
  */
-class LogModel extends Model
+class UserlogModel extends Model
 {
-    protected $name = 'log';
+    protected $name = 'userlog';
     // 设置字段信息
     protected $schema = [
         // 'id'          => 'int',

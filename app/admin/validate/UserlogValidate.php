@@ -9,9 +9,9 @@
 namespace app\admin\validate;
 
 use think\Validate;
-use app\admin\service\LogService;
+use app\admin\service\UserlogService;
 
-class LogValidate extends Validate
+class UserlogValidate extends Validate
 {
     // 验证规则
     protected $rule = [

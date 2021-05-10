@@ -12,9 +12,9 @@ use Closure;
 use think\Request;
 use think\Response;
 use think\facade\Config;
-use app\admin\service\LogService;
+use app\admin\service\UserlogService;
 
-class LogMiddleware
+class UserlogMiddleware
 {
     /**
      * 处理请求
@@ -46,7 +46,7 @@ class LogMiddleware
                 }
                 
                 $log['user_id'] = $user_id;
-                LogService::add($log);
+                UserlogService::add($log);
             }
         }
 
