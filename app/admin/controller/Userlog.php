@@ -28,7 +28,27 @@ class Userlog extends BaseController
     {
         $page       = Request::param('page/d', 1);
         $limit      = Request::param('limit/d', 5);
+        // $username   = Request::param('username/s', '');
+        // $fullname   = Request::param('fullname/s', '');
+        // $module_url = Request::param('module_url/s', '');
+        // $module_name= Request::param('module_name/s', '');
+        // $request_ip   = Request::param('request_ip/s', '');
         $where = [];
+        // if ($username) {
+        //     $where[] = ['username', 'like', '%' . $username . '%'];
+        // }
+        // if ($fullname) {
+        //     $where[] = ['fullname', 'like', '%' . $fullname . '%'];
+        // }
+        // if ($module_url) {
+        //     $where[] = ['module_url', 'like', '%' . $module_url . '%'];
+        // }
+        // if ($module_name) {
+        //     $where[] = ['module_name', 'like', '%' . $module_name . '%'];
+        // }
+        // if ($request_ip) {
+        //     $where[] = ['request_ip', '=', $request_ip];
+        // }
         $order = [];
         $data = UserlogService::list($where, $page, $limit, $order);
 
