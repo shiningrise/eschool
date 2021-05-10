@@ -16,23 +16,23 @@ class MenuValidate extends Validate
     // 验证规则
     protected $rule = [
         'id'              => ['require', 'checkId'],
-        'menu_name'       => ['require'],
+        'name'       => ['require'],
         'parent_id'        => ['require'],
     ];
 
     // 错误信息
     protected $message = [
         'id.require' => '缺少参数：角色ID',
-        'menu_name.require'   => '请输入权限名称',
+        'name.require'   => '请输入权限名称',
     ];
 
     // 验证场景
     protected $scene = [
         'id'     => ['id'],
         'info'   => ['id'],
-        'add'    => ['menu_name'],
-        'edit'   => ['id', 'menu_name'],
-        'del'   => ['id'],
+        'add'    => ['name'],
+        'edit'   => ['id', 'name'],
+        'del'    => ['id'],
     ];
 
     // 自定义验证规则：角色是否存在

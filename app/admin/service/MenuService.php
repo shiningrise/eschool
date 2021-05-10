@@ -34,15 +34,15 @@ class MenuService{
             $order = ['id' => 'desc'];
         }
 
-        $where[] = [];
+        //$where[] = [];
 
         $count = Db::name('menu')
-        //    ->where($where)
+            ->where($where)
             ->count('id');
 
         $list = Db::name('menu')
           //  ->field($field)
-         //   ->where($where)
+            ->where($where)
             ->page($page)
             ->limit($limit)
             ->order($order)
