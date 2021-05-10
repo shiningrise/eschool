@@ -29,7 +29,23 @@ class Permission extends BaseController
     {
         $page       = Request::param('page/d', 1);
         $limit      = Request::param('limit/d', 5);
+        $name       = Request::param('name/s', '');
+        $code       = Request::param('code/s', '');
+        $remark     = Request::param('remark/s', '');
+        $parent_id  = Request::param('parent_id/d', -1);
         $where = [];
+        if ($name) {
+            $where[] = ['name', 'like', '%' . $name . '%'];
+        }
+        if ($code) {
+            $where[] = ['code', 'like', '%' . $code . '%'];
+        }
+        if ($remark) {
+            $where[] = ['remark', 'like', '%' . $remark . '%'];
+        }
+        if ($parent_id!=-1) {
+            $where[] = ['parent_id', '=', $parent_id];
+        }
         $order = [];
         $data = PermissionService::list($where, $page, $limit, $order);
 

@@ -34,15 +34,15 @@ class PermissionService{
             $order = ['sort' => 'asc'];
         }
 
-        $where[] = [];
+        //$where[] = [];
 
         $count = Db::name('permission')
-        //    ->where($where)
+            ->where($where)
             ->count('id');
 
         $list = Db::name('permission')
             ->field($field)
-         //   ->where($where)
+            ->where($where)
             ->page($page)
             ->limit($limit)
             ->order($order)
