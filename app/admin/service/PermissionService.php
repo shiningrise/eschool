@@ -10,7 +10,9 @@ namespace app\admin\service;
 
 use think\facade\Db;
 use think\facade\Filesystem;
-
+use app\admin\model\PermissionModel;
+use app\admin\model\RoleModel;
+use app\admin\model\UserModel;
 class PermissionService{
 
     /**
@@ -133,5 +135,24 @@ class PermissionService{
     {
         Db::table('permission')->delete($id);
         return $id;
+    }
+
+    public static function getPermissionCodeByRoleId($roleid)
+    {
+        $role = RoleModel::find($roleid);
+        $permission_codes = array_column($role->permissions()->select()->toArray(),'code');
+        return $permission_codes;
+    }
+    public static function getPermissionCodeByUserId($userid)
+    {
+        $permission_codes_all = [];
+        $user = UserModel::find($userid);
+        $roles = $user->roles;
+        foreach($roles as $role)
+        {
+            $permission_codes = self::getPermissionCodeByRoleId($role->id);
+            $permission_codes_all=array_merge($permission_codes_all,$permission_codes);
+        }
+        return formatArray($permission_codes_all);
     }
 }

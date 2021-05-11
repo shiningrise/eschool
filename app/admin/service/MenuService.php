@@ -24,7 +24,6 @@ class MenuService{
     public static function list($type = 'tree')
     {
         $order = ['sort'=>'desc','id' => 'asc'];
-
         $list = Db::name('menu')
             ->order($order)
             ->select()
@@ -142,4 +141,56 @@ class MenuService{
         Db::table('menu')->delete($id);
         return $id;
     }
+
+    /*
+     *根据用户id获取菜单
+     */
+    public static function getByUserId($userid)
+    {
+        $permission_codes = PermissionService::getPermissionCodeByUserId($userid);
+        $order = ['sort'=>'desc','id' => 'asc'];
+        $list = Db::name('menu')->order($order)->select()->toArray();
+        $menus=[];
+        foreach($list as $menu)
+        {
+            if(in_array($menu['permission_code'], $permission_codes)) // permission_code
+            {
+                $menus[]=$menu;
+                $pid = $menu['parent_id'];
+                while($pid!=0)
+                {
+                    foreach($list as $tmpMenu)
+                    {
+                        if($tmpMenu['id'] == $pid)
+                        {
+                            $found = false;
+                            foreach($menus as $newMenu)
+                            {
+                                if($newMenu['id']==$pid){
+                                    $found = true;
+                                    break;
+                                }
+                            }
+                            if($found == false)
+                            {
+                                $menus[]=$tmpMenu;
+                                $pid=$tmpMenu['parent_id'];
+                            }
+                            else
+                            {
+                                $pid=0;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        $tree = self::toTree($menus, 0);
+        $data['count'] = count($tree);
+        $data['list']  = $tree;
+        return $data;
+    }
+
+    
 }

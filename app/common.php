@@ -195,3 +195,22 @@ function http_post($url, $param = [], $header = [])
 
     return $response;
 }
+
+// 删除数组中相同元素，只保留一个相同元素
+function formatArray($array)
+{
+    sort($array);
+    $tem = "";
+    $temarray = array();
+    $j = 0;
+    for($i=0;$i<count($array);$i++)
+    {
+        if($array[$i]!=$tem)
+        {
+            $temarray[$j] = $array[$i];
+            $j++;
+        }
+        $tem = $array[$i];
+    }
+    return $temarray;
+}

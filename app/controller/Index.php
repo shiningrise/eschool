@@ -4,7 +4,8 @@ namespace app\controller;
 use think\facade\Request;
 use app\BaseController;
 use app\admin\model\UserModel;
-// 
+use app\admin\service\PermissionService;
+use app\admin\service\MenuService;
 
 class Index extends BaseController
 {
@@ -14,16 +15,10 @@ class Index extends BaseController
      */
     public function index()
     {
-        $str='ok';
-        $user = UserModel::find(1);
-
-        //$res= $user->roles()->save(['rolename'=>'角色1']);
-
-        // $roles = $user->roles;
-        // foreach ($roles as $role) {
-        //     $str = $role->rolename . $str .'<br/>';
-        // }
-        return success($user);
+        //$user = UserModel::find(2);
+       // $data = PermissionService::getPermissionCodeByUserId(31);
+        $data = MenuService::getByUserId(31);
+        return success($data);
     }
 
     public function hello($name = 'ThinkPHP6')
