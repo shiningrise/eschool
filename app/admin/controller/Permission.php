@@ -17,8 +17,6 @@ class Permission extends BaseController
 {
     /**
      * @Apidoc\Title("权限管理")
-     * @Apidoc\Param("page", type="int", default="1", desc="页码")
-     * @Apidoc\Param("limit", type="int", default="10", desc="pagesize")
      * @Apidoc\Returned(ref="return"),
      * @Apidoc\Returned("data", type="object", desc="返回数据",
      *      @Apidoc\Returned(ref="returnPaging"),
@@ -27,28 +25,28 @@ class Permission extends BaseController
      */
     public function list()
     {
-        $page       = Request::param('page/d', 1);
-        $limit      = Request::param('limit/d', 5);
-        $name       = Request::param('name/s', '');
-        $code       = Request::param('code/s', '');
-        $remark     = Request::param('remark/s', '');
-        $parent_id  = Request::param('parent_id/d', -1);
-        $where = [];
-        if ($name) {
-            $where[] = ['name', 'like', '%' . $name . '%'];
-        }
-        if ($code) {
-            $where[] = ['code', 'like', '%' . $code . '%'];
-        }
-        if ($remark) {
-            $where[] = ['remark', 'like', '%' . $remark . '%'];
-        }
-        if ($parent_id!=-1) {
-            $where[] = ['parent_id', '=', $parent_id];
-        }
-        $order = [];
-        $data = PermissionService::list($where, $page, $limit, $order);
-
+        // $page       = Request::param('page/d', 1);
+        // $limit      = Request::param('limit/d', 5);
+        // $name       = Request::param('name/s', '');
+        // $code       = Request::param('code/s', '');
+        // $remark     = Request::param('remark/s', '');
+        // $parent_id  = Request::param('parent_id/d', -1);
+        // $where = [];
+        // if ($name) {
+        //     $where[] = ['name', 'like', '%' . $name . '%'];
+        // }
+        // if ($code) {
+        //     $where[] = ['code', 'like', '%' . $code . '%'];
+        // }
+        // if ($remark) {
+        //     $where[] = ['remark', 'like', '%' . $remark . '%'];
+        // }
+        // if ($parent_id!=-1) {
+        //     $where[] = ['parent_id', '=', $parent_id];
+        // }
+        // $order = [];
+        //$data = PermissionService::list($where, $page, $limit, $order);
+        $data = PermissionService::list();
         return success($data);
     }
 

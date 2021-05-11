@@ -25,9 +25,6 @@ class MenuService{
     {
         $order = ['sort'=>'desc','id' => 'asc'];
 
-        $count = Db::name('menu')
-            ->count('id');
-
         $list = Db::name('menu')
             ->order($order)
             ->select()

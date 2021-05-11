@@ -24,42 +24,43 @@ class PermissionService{
      * 
      * @return array 
      */
-    public static function list($where = [], $page = 1, $limit = 10,  $order = [], $field = '')
+    public static function list($type = 'tree')
     {
         if (empty($field)) {
             $field = 'id,code,name,parent_id,sort,remark';
         }
 
-        if (empty($order)) {
-            $order = ['sort' => 'asc'];
-        }
-
-        //$where[] = [];
-
-        $count = Db::name('permission')
-            ->where($where)
-            ->count('id');
-
+        $order = ['sort'=>'desc','id' => 'asc'];
         $list = Db::name('permission')
             ->field($field)
-            ->where($where)
-            ->page($page)
-            ->limit($limit)
             ->order($order)
             ->select()
             ->toArray();
-
-        $pages = ceil($count / $limit);
-
-        $data['count'] = $count;
-        $data['pages'] = $pages;
-        $data['page']  = $page;
-        $data['limit'] = $limit;
-        $data['list']  = $list;
-
+        $tree = self::toTree($list, 0);
+        $permission['tree'] = $tree;
+        $permission['list'] = $list;
+        if ($type == 'list') {
+            $data['count'] = count($permission['list']);
+            $data['list']  = $permission['list'];
+        } else {
+            $data['count'] = count($permission['tree']);
+            $data['list']  = $permission['tree'];
+        }
         return $data;
     }
+    public static function toTree($list, $parent_id)
+    {
+        $tree = [];
 
+        foreach ($list as $k => $v) {
+            if ($v['parent_id'] == $parent_id) {
+                $v['children'] = self::toTree($list, $v['id']);
+                $tree[] = $v;
+            }
+        }
+
+        return $tree;
+    }
     /**
      * 权限信息
      *
