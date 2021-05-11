@@ -3,5 +3,5 @@
 return [
     \app\admin\middleware\AllowCrossDomain::class,
     \app\admin\middleware\TokenVerifyMiddleware::class,
-    // \app\admin\middleware\UserlogMiddleware::class,
+    \app\admin\middleware\UserlogMiddleware::class,
 ];

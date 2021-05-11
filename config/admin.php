@@ -10,7 +10,7 @@ return [
     // 超级管理员id（所有权限）
     'super_ids' => [1],
     // 是否记录日志
-    'is_log' => true,
+    'is_log' => false,
     // token 
     'token' => [
         // 密钥
