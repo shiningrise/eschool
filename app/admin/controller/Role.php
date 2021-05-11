@@ -2,6 +2,7 @@
 namespace app\admin\controller;
 
 use think\facade\Request;
+use think\facade\Log;
 use app\BaseController;
 use app\admin\model\RoleModel;
 use app\admin\service\RoleService;
@@ -90,14 +91,14 @@ class Role extends BaseController
      */
     public function edit()
     {
-        $param['id']    = Request::param('id/d', '');
-        $param['rolename']      = Request::param('rolename/s', '');
-        $param['beizhu']      = Request::param('beizhu/s', '');
-
+        $param['id']                = Request::param('id/d', '');
+        $param['rolename']          = Request::param('rolename/s', '');
+        $param['beizhu']            = Request::param('beizhu/s', '');
+        $param['permission_ids']    = input("post.permission_ids/a");
         validate(RoleValidate::class)->scene('edit')->check($param);
 
         $data = RoleService::edit($param);
-     //   excption($param)
+     // excption($param)
         return success($data);
     }
 

@@ -10,6 +10,7 @@ namespace app\admin\service;
 
 use think\facade\Db;
 use think\facade\Filesystem;
+use app\admin\model\RoleModel;
 
 class RoleService{
 
@@ -69,10 +70,13 @@ class RoleService{
      */
     public static function info($id)
     {
-        $data = Db::name('role')
-        ->where('id', $id)
-        ->find();
-        return $data;
+        //$data = Db::name('role')->where('id', $id)->find();
+
+        $role = RoleModel::find($id);
+
+        $role['permission_ids'] = array_column($role->permissions()->select()->toArray(),'id');
+
+        return $role;
     }
 
     /**
@@ -108,11 +112,28 @@ class RoleService{
     public static function edit($param)
     {
         $id = $param['id'];
+        //$res = Db::name('role')->where('id', $id)->update($param);
+        $role = RoleModel::find($id);
+        $role->rolename = $param['rolename'];
+        $role->beizhu   = $param['beizhu'];
+        $permission_ids = $param['permission_ids'];
 
-        $res = Db::name('role')
-            ->where('id', $id)
-            ->update($param);
-
+        $permissions = $role->permissions;
+        foreach ($permissions as $permission) 
+        {
+            if (!in_array($permission->id, $permission_ids))
+            {
+                $role->permissions()->detach($permission->id);
+            }
+        }
+        $dbpermission_ids = array_column($role->permissions()->select()->toArray(),'id');//
+        foreach($permission_ids as $permission_id)
+        {
+             if (!in_array($permission_id, $dbpermission_ids))
+             {
+                $role->permissions()->save($permission_id);
+             }
+        }
         // if (empty($res)) {
         //     exception();
         // }
