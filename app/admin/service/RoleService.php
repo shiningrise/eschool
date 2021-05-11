@@ -89,8 +89,15 @@ class RoleService{
     public static function add($param)
     {
     //    $param['rolename']   = datetime();
-        $id = Db::name('role')
-            ->insertGetId($param);
+        $permission_ids = $param['permission_ids'];
+        unset($param['permission_ids']);
+        $id = Db::name('role')->insertGetId($param);
+        $role = RoleModel::find($id);
+        
+        foreach($permission_ids as $permission_id)
+        {
+            $role->permissions()->save($permission_id);
+        }
 
         if (empty($id)) {
             exception();

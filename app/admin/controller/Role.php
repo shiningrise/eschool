@@ -74,6 +74,7 @@ class Role extends BaseController
     public function add()
     {
         $param['rolename']        = Request::param('rolename/s', '');
+        $param['permission_ids']    = input("post.permission_ids/a");
         validate(RoleValidate::class)->scene('add')->check($param);
         $data = RoleService::add($param);
 
