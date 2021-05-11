@@ -2,6 +2,7 @@
 namespace app\admin\controller;
 
 use think\facade\Request;
+use think\facade\Log;
 use app\BaseController;
 use app\admin\model\UserModel;
 use app\admin\service\UserService;
@@ -71,6 +72,7 @@ class User extends BaseController
     {
         $param['username']        = Request::param('username/s', '');
         $param['fullname']        = Request::param('fullname/s', '');
+        $param['roleids']        = Request::param('roleids/s', '');
         validate(UserValidate::class)->scene('add')->check($param);
         $data = UserService::add($param);
 
@@ -89,11 +91,11 @@ class User extends BaseController
      */
     public function edit()
     {
-        $param['id']    = Request::param('id/d', '');
-        $param['username']      = Request::param('username/s', '');
-        $param['fullname']      = Request::param('fullname/s', '');
-        $param['beizhu']      = Request::param('beizhu/s', '');
-
+        $param['id']        = Request::param('id/d', '');
+        $param['username']  = Request::param('username/s', '');
+        $param['fullname']  = Request::param('fullname/s', '');
+        $param['beizhu']    = Request::param('beizhu/s', '');
+        $param['roleids']    = Request::param('roleids/s', '');
         validate(UserValidate::class)->scene('edit')->check($param);
 
         $data = UserService::edit($param);

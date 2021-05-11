@@ -9,8 +9,11 @@
 namespace app\admin\service;
 
 use think\facade\Db;
+use think\facade\Log;
 use think\facade\Filesystem;
 use app\admin\cache\UserCache;
+use app\admin\model\UserModel;
+use app\admin\model\RoleModel;
 
 class UserService{
 
@@ -71,10 +74,12 @@ class UserService{
      */
     public static function info($id)
     {
-        $res = Db::name('user')
-        ->where('id', $id)
-        ->find();
-        return $res;
+        //$res = Db::name('user')->where('id', $id)->find();
+        //roleids
+        $user = UserModel::find($id);
+        $dbroleids = array_column($user->roles()->select()->toArray(), 'id');
+        $user['roleids']=join(",",$dbroleids);
+        return $user;
     }
 
     /**
@@ -112,14 +117,20 @@ class UserService{
      */
     public static function add($param)
     {
-        $id = Db::name('user')
-            ->insertGetId($param);
-
-        if (empty($id)) {
-            exception();
-        }
-
+        $roleids = $param['roleids'];
+        unset($param['roleids']);
+        //$id = Db::name('user')->insertGetId($param);
+        $user = new UserModel;
+        $user->save($param);
+        $id=$user->id;
         $param['id'] = $id;
+        $strRoleids = explode ( ',',$roleids );
+        foreach($strRoleids as $strRoleid)
+        {
+            $roleid=intval($strRoleid);
+            if($roleid>0)
+                $user->roles()->save($roleid);
+        }
 
         return $param;
     }
@@ -135,9 +146,31 @@ class UserService{
     public static function edit($param)
     {
         $id = $param['id'];
+        $roleids = $param['roleids'];
+        unset($param['roleids']);
         $res = Db::name('user')
             ->where('id', $id)
             ->update($param);
+
+        $user = UserModel::find($id);
+        $strRoleids = explode ( ',',$roleids);
+        $dbroles = $user->roles;
+        foreach ($dbroles as $dbrole) 
+        {
+            if (!in_array(strval($dbrole->id), $strRoleids))
+            {
+                $user->roles()->detach($dbrole->id);
+            }
+        }
+        $dbroleids = array_column($user->roles()->select()->toArray(),'id');//
+        foreach($strRoleids as $strRoleid)
+        {
+             if (!in_array(intval($strRoleid), $dbroleids))
+             {
+                $roleid=intval($strRoleid);
+                if($roleid>0)  $user->roles()->save($roleid);
+             }
+        }
 
         // if (empty($res)) {
         //     exception();
@@ -157,7 +190,14 @@ class UserService{
      */
     public static function del($id)
     {
-        Db::table('user')->delete($id);
+    //    Db::table('user')->delete($id);
+        $user = UserModel::find($id);
+        $dbroles = $user->roles;
+        foreach ($dbroles as $dbrole) 
+        {
+            $user->roles()->detach($dbrole->id);
+        }
+        $user->delete();
         return $id;
     }
 

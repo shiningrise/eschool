@@ -17,14 +17,12 @@ class UserValidate extends Validate
     protected $rule = [
         'id'    => ['require', 'checkId'],
         'username'        => ['require'],
-        'fullname'        => ['require'],
     ];
 
     // 错误信息
     protected $message = [
         'id.require' => '缺少参数：用户ID',
         'username.require'   => '请输入用户名',
-        'fullname.require'   => '请输入用户姓名',
     ];
 
     // 验证场景
