@@ -78,7 +78,7 @@ class UserService{
         //roleids
         $user = UserModel::find($id);
         $dbroleids = array_column($user->roles()->select()->toArray(), 'id');
-        $user['roleids']=join(",",$dbroleids);
+        $user['roleids']=$dbroleids;
         return $user;
     }
 
@@ -124,12 +124,9 @@ class UserService{
         $user->save($param);
         $id=$user->id;
         $param['id'] = $id;
-        $strRoleids = explode ( ',',$roleids );
-        foreach($strRoleids as $strRoleid)
+        foreach($roleids as $roleid)
         {
-            $roleid=intval($strRoleid);
-            if($roleid>0)
-                $user->roles()->save($roleid);
+            if($roleid>0)  $user->roles()->save($roleid);
         }
 
         return $param;
@@ -153,21 +150,19 @@ class UserService{
             ->update($param);
 
         $user = UserModel::find($id);
-        $strRoleids = explode ( ',',$roleids);
         $dbroles = $user->roles;
         foreach ($dbroles as $dbrole) 
         {
-            if (!in_array(strval($dbrole->id), $strRoleids))
+            if (!in_array($dbrole->id, $roleids))
             {
                 $user->roles()->detach($dbrole->id);
             }
         }
         $dbroleids = array_column($user->roles()->select()->toArray(),'id');//
-        foreach($strRoleids as $strRoleid)
+        foreach($roleids as $roleid)
         {
-             if (!in_array(intval($strRoleid), $dbroleids))
+             if (!in_array($roleid, $dbroleids))
              {
-                $roleid=intval($strRoleid);
                 if($roleid>0)  $user->roles()->save($roleid);
              }
         }

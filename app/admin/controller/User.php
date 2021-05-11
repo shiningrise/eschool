@@ -72,7 +72,7 @@ class User extends BaseController
     {
         $param['username']        = Request::param('username/s', '');
         $param['fullname']        = Request::param('fullname/s', '');
-        $param['roleids']        = Request::param('roleids/s', '');
+        $param['roleids']         = input("post.roleids/a");
         validate(UserValidate::class)->scene('add')->check($param);
         $data = UserService::add($param);
 
@@ -95,7 +95,7 @@ class User extends BaseController
         $param['username']  = Request::param('username/s', '');
         $param['fullname']  = Request::param('fullname/s', '');
         $param['beizhu']    = Request::param('beizhu/s', '');
-        $param['roleids']    = Request::param('roleids/s', '');
+        $param['roleids']   = input("post.roleids/a");
         validate(UserValidate::class)->scene('edit')->check($param);
 
         $data = UserService::edit($param);
