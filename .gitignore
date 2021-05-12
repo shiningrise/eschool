@@ -3,3 +3,5 @@
 /vendor
 *.log
 .env
+/public/index.html
+/public/favicon.ico
