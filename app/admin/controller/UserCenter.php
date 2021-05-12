@@ -78,11 +78,9 @@ class UserCenter
      */
     public function edit()
     {
-        $param['admin_user_id'] = Request::param('admin_user_id/d', '');
+        $param['id']            = Request::param('id/d', '');
         $param['username']      = Request::param('username/s', '');
-        $param['nickname']      = Request::param('nickname/s', '');
-        $param['phone']         = Request::param('phone/s', '');
-        $param['email']         = Request::param('email/s', '');
+        $param['fullname']      = Request::param('fullname/s', '');
 
         validate(UserCenterValidate::class)->scene('edit')->check($param);
 
@@ -102,7 +100,7 @@ class UserCenter
      */
     public function pwd()
     {
-        $param['admin_user_id'] = Request::param('admin_user_id/d', '');
+        $param['id'] = Request::param('id/d', '');
         $param['password_old']  = Request::param('password_old/s', '');
         $param['password_new']  = Request::param('password_new/s', '');
 

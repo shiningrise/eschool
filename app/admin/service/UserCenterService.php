@@ -16,13 +16,13 @@ class UserCenterService
     /**
      * 我的信息
      *
-     * @param integer $admin_user_id 用户id
+     * @param integer $id 用户id
      * 
      * @return array
      */
-    public static function info($admin_user_id)
+    public static function info($id)
     {
-        $admin_user = UserService::info($admin_user_id);
+        $admin_user = UserService::info($id);
 
         $data['id'] = $admin_user['id'];
         //$data['avatar']        = $admin_user['avatar'];
@@ -51,23 +51,17 @@ class UserCenterService
      */
     public static function edit($param)
     {
-        $admin_user_id = $param['admin_user_id'];
+        $id = $param['id'];
         
-        unset($param['admin_user_id']);
-
-        $param['update_time'] = datetime();
-
-        $res = Db::name('admin_user')
-            ->where('admin_user_id', $admin_user_id)
+        unset($param['id']);
+        $res = Db::name('user')
+            ->where('id', $id)
             ->update($param);
 
         if (empty($res)) {
             exception();
         }
-
-        $param['admin_user_id'] = $admin_user_id;
-
-        AdminUserCache::upd($admin_user_id);
+        $param['id'] = $id;
 
         return $param;
     }
@@ -81,31 +75,28 @@ class UserCenterService
      */
     public static function pwd($param)
     {
-        $admin_user_id = $param['admin_user_id'];
+        $id = $param['id'];
         $password_old  = $param['password_old'];
         $password_new  = $param['password_new'];
 
-        $admin_user = AdminUserService::info($admin_user_id);
+        $user = UserService::info($id);
 
-        if (md5($password_old) != $admin_user['password']) {
+        if (md5($password_old) != $user['password']) {
             exception('旧密码错误');
         }
 
         $update['password']    = md5($password_new);
-        $update['update_time'] = datetime();
 
-        $res = Db::name('admin_user')
-            ->where('admin_user_id', $admin_user_id)
+        $res = Db::name('user')
+            ->where('id', $id)
             ->update($update);
 
         if (empty($res)) {
             exception();
         }
 
-        $update['admin_user_id'] = $admin_user_id;
-        $update['password']      = $res;
-
-        AdminUserCache::upd($admin_user_id);
+        $update['id'] = $id;
+        $update['password']= $res;
 
         return $update;
     }
@@ -119,7 +110,7 @@ class UserCenterService
      */
     public static function avatar($param)
     {
-        $data = AdminUserService::avatar($param);
+        $data = UserService::avatar($param);
 
         return $data;
     }
