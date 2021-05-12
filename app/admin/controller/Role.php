@@ -3,9 +3,12 @@ namespace app\admin\controller;
 
 use think\facade\Request;
 use think\facade\Log;
+use think\facade\Db;
 use app\BaseController;
 use app\admin\model\RoleModel;
+use app\admin\model\UserModel;
 use app\admin\service\RoleService;
+use app\admin\service\UserService;
 use app\admin\validate\RoleValidate;
 use hg\apidoc\annotation as Apidoc;
 
@@ -118,6 +121,47 @@ class Role extends BaseController
 
         $data = RoleService::del($param['id']);
 
+        return success($data);
+    }
+
+    /**
+     * @Apidoc\Title("获取角色用户")
+     * @Apidoc\Param("page", type="int", default="1", desc="页码")
+     * @Apidoc\Param("limit", type="int", default="10", desc="pagesize")
+     * @Apidoc\Returned(ref="return"),
+     * @Apidoc\Returned("data", type="object", desc="返回数据",
+     *      @Apidoc\Returned(ref="returnPaging"),
+     *      @Apidoc\Returned("list", type="array", desc="数据列表")
+     * )
+     */
+    public function user()
+    {
+        $page       = Request::param('page/d', 1);
+        $limit      = Request::param('limit/d', 5);
+        $role_id   = Request::param('role_id/d', 0);
+        
+        $data = RoleService::listUserByRoleId($role_id, $page, $limit);
+
+        return success($data);
+    }
+
+    /**
+     * @Apidoc\Title("移除角色用户")
+     * @Apidoc\Param("user_id", type="int", default="1", desc="user_id")
+     * @Apidoc\Param("role_id", type="int", default="1", desc="role_id")
+     * @Apidoc\Returned(ref="return"),
+     * @Apidoc\Returned("data", type="object", desc="返回数据",
+     *      @Apidoc\Returned(ref="returnPaging"),
+     *      @Apidoc\Returned("list", type="array", desc="数据列表")
+     * )
+     */
+    public function userRemove()
+    {
+        $user_id   = Request::param('user_id/d', 0);
+        $role_id   = Request::param('role_id/d', 0);
+        // Log::info($role_id);
+        // Log::info($user_id);
+        $data = RoleService::userRemove($role_id,$user_id);
         return success($data);
     }
 }

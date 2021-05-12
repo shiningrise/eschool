@@ -34,8 +34,6 @@ class PermissionMiddleware
         $urls = ModuleService::getModuleUrlByUserId($user_id);
         if(!in_array($module_url, $api_white_list) && !in_array($module_url, $urls))
         {
-            Log::info($module_url);
-            Log::info($urls);
             http_response_code(403);
             error("无权访问");
             //exit();

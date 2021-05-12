@@ -9,13 +9,59 @@
 namespace app\admin\service;
 
 use think\facade\Db;
+use think\facade\Log;
 use think\facade\Filesystem;
 use app\admin\model\RoleModel;
 
 class RoleService{
 
     /**
-     * 新闻列表
+     * 
+     *
+     * @param array   $role_id 角色id
+     * @param integer $page  页数
+     * @param integer $limit 数量
+     * @param array   $order 排序
+     * @param string  $field 字段
+     * 
+     * @return array 
+     */
+    public static function listUserByRoleId($role_id, $page = 1, $limit = 10,  $order = [])
+    {
+        // if (empty($order)) {
+        //     $order = ['id' => 'desc'];
+        // }
+         $count = Db::name('user')
+            ->alias('u')
+            ->join(['user_role'=>'ur'],'u.id=ur.user_id')
+            ->join(['role'=>'r'],'ur.role_id=r.id')
+            ->where('r.id',$role_id)
+            ->count('r.id');
+
+        $list = Db::name('user')
+            ->alias(['user'=>'u','user_role'=>'ur','role'=>'r'])
+            ->join('user_role','u.id=ur.user_id')
+            ->join('role','ur.role_id=r.id')
+            ->field('u.id,u.username,u.fullname,u.is_approved,u.is_delete')
+            ->where('r.id',$role_id)
+            ->page($page)
+            ->limit($limit)
+            ->order($order)
+            ->select();
+
+        $pages = ceil($count / $limit);
+
+        $data['count'] = $count;
+        $data['pages'] = $pages;
+        $data['page']  = $page;
+        $data['limit'] = $limit;
+        $data['list']  = $list;
+
+        return $data;
+    }
+
+    /**
+     * 
      *
      * @param array   $where 条件
      * @param integer $page  页数
@@ -173,5 +219,15 @@ class RoleService{
         }
         $role->delete();
         return $id;
+    }
+
+    /**
+     * 移除用户
+     */
+    public static function userRemove($role_id,$user_id)
+    {
+        $role = RoleModel::find($role_id);
+        $res = $role->users()->detach($user_id);
+        return $res;
     }
 }
