@@ -21,6 +21,19 @@ use hg\apidoc\annotation as Apidoc;
 class UserCenter
 {
     /**
+     * @Apidoc\Title("获取登陆用户菜单")
+     * @Apidoc\Header(ref="headerAdmin")
+     * @Apidoc\Returned(ref="return")
+     * @Apidoc\Returned("data", type="object")
+     */ 
+    public function menu()
+    {
+        $userid = user_id();
+        $data = MenuService::getByUserId($userid);
+        return success($data);
+    }
+
+    /**
      * @Apidoc\Title("我的信息")
      * @Apidoc\Header(ref="headerAdmin")
      * @Apidoc\Param("admin_user_id", type="int", require=true, desc="用户id")
