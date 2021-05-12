@@ -159,7 +159,19 @@ class RoleService{
      */
     public static function del($id)
     {
-        Db::table('role')->delete($id);
+        //Db::table('role')->delete($id);
+        $role = RoleModel::find($id);
+        $users = $role->users;
+        foreach ($users as $user) 
+        {
+            $role->users()->detach($user->id);
+        }
+        $permissions = $role->permissions;
+        foreach ($permissions as $permission) 
+        {
+            $role->permissions()->detach($permission->id);
+        }
+        $role->delete();
         return $id;
     }
 }
