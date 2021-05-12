@@ -6,6 +6,7 @@ use app\BaseController;
 use app\admin\model\UserModel;
 use app\admin\service\PermissionService;
 use app\admin\service\MenuService;
+use app\admin\service\ModuleService;
 
 class Index extends BaseController
 {
@@ -17,7 +18,9 @@ class Index extends BaseController
     {
         //$user = UserModel::find(2);
        // $data = PermissionService::getPermissionCodeByUserId(31);
-        $data = MenuService::getByUserId(31);
+        //$data = MenuService::getByUserId(31);
+        $data = ModuleService::getModuleUrlByUserId(31);
+        
         return success($data);
     }
 

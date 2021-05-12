@@ -12,6 +12,7 @@ use think\facade\Request;
 use app\admin\validate\UserCenterValidate;
 use app\admin\service\UserCenterService;
 use app\admin\service\MenuService;
+use app\admin\service\ModuleService;
 use hg\apidoc\annotation as Apidoc;
 
 /**
@@ -30,6 +31,19 @@ class UserCenter
     {
         $userid = user_id();
         $data = MenuService::getByUserId($userid);
+        return success($data);
+    }
+
+    /**
+     * @Apidoc\Title("获取登陆用户可访问URL")
+     * @Apidoc\Header(ref="headerAdmin")
+     * @Apidoc\Returned(ref="return")
+     * @Apidoc\Returned("data", type="object")
+     */ 
+    public function module()
+    {
+        $userid = user_id();
+        $data = ModuleService::getModuleUrlByUserId($userid);;
         return success($data);
     }
 

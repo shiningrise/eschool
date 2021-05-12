@@ -146,4 +146,22 @@ class ModuleService{
         Db::name('module')->delete($id);
         return $id;
     }
+
+    /*
+     * 获取用户可访问功能模块
+     */
+    public static function getModuleUrlByUserId($userid)
+    {
+        $permission_codes = PermissionService::getPermissionCodeByUserId($userid);
+        $list = Db::name('module')->select()->toArray();
+        $data = [];
+        foreach($list as $module)
+        {
+            if(in_array($module['permission_code'], $permission_codes)) 
+            {
+                $data[]=$module['url'];
+            }
+        }
+        return $data;
+    }
 }
