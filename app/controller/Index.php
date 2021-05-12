@@ -17,10 +17,10 @@ class Index extends BaseController
     public function index()
     {
         //$user = UserModel::find(2);
-       // $data = PermissionService::getPermissionCodeByUserId(31);
+        //$data = PermissionService::getPermissionCodeByUserId(31);
         //$data = MenuService::getByUserId(31);
-        $data = ModuleService::getModuleUrlByUserId(31);
-        
+        //$data = ModuleService::getModuleUrlByUserId(31);
+        $data = MenuService::getByUserId(1);
         return success($data);
     }
 

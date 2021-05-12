@@ -142,6 +142,18 @@ class MenuService{
         return $id;
     }
 
+    public static function IsinMenu($menus,$id)
+    {
+        $found = false;
+        foreach($menus as $newMenu)
+        {
+            if($newMenu['id']==$id){
+                $found = true;
+                break;
+            }
+        }
+        return $found;
+    }
     /*
      *根据用户id获取菜单
      */
@@ -155,31 +167,33 @@ class MenuService{
         {
             if(in_array($menu['permission_code'], $permission_codes)) // permission_code
             {
-                $menus[]=$menu;
-                $pid = $menu['parent_id'];
-                while($pid!=0)
-                {
-                    foreach($list as $tmpMenu)
+                if(self::IsInMenu($menus,$menu['id'])==false){
+                    $menus[]=$menu;
+                    $pid = $menu['parent_id'];
+                    while($pid!=0)
                     {
-                        if($tmpMenu['id'] == $pid)
+                        foreach($list as $tmpMenu)
                         {
-                            $found = false;
-                            foreach($menus as $newMenu)
+                            if($tmpMenu['id'] == $pid)
                             {
-                                if($newMenu['id']==$pid){
-                                    $found = true;
+                                $found = false;
+                                foreach($menus as $newMenu)
+                                {
+                                    if($newMenu['id']==$pid){
+                                        $found = true;
+                                        break;
+                                    }
+                                }
+                                if($found == false)
+                                {
+                                    $menus[]=$tmpMenu;
+                                    $pid=$tmpMenu['parent_id'];
+                                }
+                                else
+                                {
+                                    $pid=0;
                                     break;
                                 }
-                            }
-                            if($found == false)
-                            {
-                                $menus[]=$tmpMenu;
-                                $pid=$tmpMenu['parent_id'];
-                            }
-                            else
-                            {
-                                $pid=0;
-                                break;
                             }
                         }
                     }
