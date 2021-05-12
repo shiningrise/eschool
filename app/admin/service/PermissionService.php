@@ -147,11 +147,14 @@ class PermissionService{
     {
         $permission_codes_all = [];
         $user = UserModel::find($userid);
-        $roles = $user->roles;
-        foreach($roles as $role)
+        if($user)
         {
-            $permission_codes = self::getPermissionCodeByRoleId($role->id);
-            $permission_codes_all=array_merge($permission_codes_all,$permission_codes);
+            $roles = $user->roles;
+            foreach($roles as $role)
+            {
+                $permission_codes = self::getPermissionCodeByRoleId($role->id);
+                $permission_codes_all=array_merge($permission_codes_all,$permission_codes);
+            }
         }
         return formatArray($permission_codes_all);
     }

@@ -28,21 +28,21 @@ class TokenVerifyMiddleware
         $menu_url       = request_pathinfo();
         $api_white_list = Config::get('admin.api_white_list');
 
-        // if (!in_array($menu_url, $api_white_list)) {
-        //     $token = token();
+        if (!in_array($menu_url, $api_white_list)) {
+            $token = token();
 
-        //     if (empty($token)) {
-        //         exception('Requests Headers：Token must');
-        //     }
+            if (empty($token)) {
+                exception('Requests Headers：Token must');
+            }
 
-        //     $user_id = user_id();
+            $user_id = user_id();
 
-        //     if (empty($user_id)) {
-        //         exception('Requests Headers：UserId must');
-        //     }
+            if (empty($user_id)) {
+                exception('Requests Headers：UserId must');
+            }
 
-        //     TokenService::verify($token, $user_id);
-        // }
+            TokenService::verify($token, $user_id);
+        }
 
         return $next($request);
     }

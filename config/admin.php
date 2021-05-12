@@ -10,7 +10,7 @@ return [
     // 超级管理员id（所有权限）
     'super_ids' => [1],
     // 是否记录日志
-    'is_log' => false,
+    'is_log' => true,
     // token 
     'token' => [
         // 密钥
@@ -29,6 +29,7 @@ return [
         'admin/UserLogin/verify',
         'admin/UserLogin/login',
         'admin/UserLogin/logout',
+        'admin/UserCenter/info',
     ],
     // 权限白名单
     'rule_white_list' => [
