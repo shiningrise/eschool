@@ -17,10 +17,9 @@ class Index extends BaseController
     public function index()
     {
         //$user = UserModel::find(2);
-        //$data = PermissionService::getPermissionCodeByUserId(31);
-        //$data = MenuService::getByUserId(31);
-        //$data = ModuleService::getModuleUrlByUserId(31);
-        $data = MenuService::getByUserId(1);
+        $data[0] = PermissionService::getPermissionCodeByUserId(1);
+        $data[1] = ModuleService::getModuleUrlByUserId(1);
+        $data[2] = MenuService::getByUserId(1);
         return success($data);
     }
 

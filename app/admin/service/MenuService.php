@@ -142,7 +142,7 @@ class MenuService{
         return $id;
     }
 
-    public static function IsinMenu($menus,$id)
+    public static function IsInMenu($menus,$id)
     {
         $found = false;
         foreach($menus as $newMenu)
