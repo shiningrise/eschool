@@ -22,13 +22,14 @@ class UserCenterService
      */
     public static function info($id)
     {
-        $admin_user = UserService::info($id);
+        $user = UserService::info($id);
 
-        $data['id'] = $admin_user['id'];
+        $data['id'] = $user['id'];
         //$data['avatar']        = $admin_user['avatar'];
-        $data['username']      = $admin_user['username'];
-        $data['fullname']      = $admin_user['fullname'];
-        $data['roles']  = ["admin\/AdminIndex\/index","admin\/AdminIndex\/member","admin\/AdminLogin\/login","admin\/AdminLogin\/logout","admin\/AdminLogin\/verify","admin\/AdminMenu\/add","admin\/AdminMenu\/dele","admin\/AdminMenu\/disable","admin\/AdminMenu\/edit","admin\/AdminMenu\/info","admin\/AdminMenu\/list","admin\/AdminMenu\/role","admin\/AdminMenu\/roleRemove","admin\/AdminMenu\/unauth","admin\/AdminMenu\/user","admin\/AdminMenu\/userRemove","admin\/AdminRole\/add","admin\/AdminRole\/dele","admin\/AdminRole\/disable","admin\/AdminRole\/edit","admin\/AdminRole\/info","admin\/AdminRole\/list","admin\/AdminRole\/user","admin\/AdminRole\/userRemove","admin\/AdminSetting\/cache","admin\/AdminSetting\/info","admin\/AdminSetting\/token","admin\/AdminSetting\/verify","admin\/AdminUser\/add","admin\/AdminUser\/avatar","admin\/AdminUser\/dele","admin\/AdminUser\/disable","admin\/AdminUser\/edit","admin\/AdminUser\/info","admin\/AdminUser\/list","admin\/AdminUser\/pwd","admin\/AdminUser\/rule","admin\/AdminUser\/super","admin\/AdminUserCenter\/avatar","admin\/AdminUserCenter\/edit","admin\/AdminUserCenter\/info","admin\/AdminUserCenter\/log","admin\/AdminUserCenter\/pwd","admin\/AdminUserCenter\/setting","admin\/AdminUserLog\/clear","admin\/AdminUserLog\/dele","admin\/AdminUserLog\/info","admin\/AdminUserLog\/list","admin\/AdminUserLog\/stat","admin\/AdminUtils\/apidoc","admin\/AdminUtils\/bytetran","admin\/AdminUtils\/form","admin\/AdminUtils\/ipinfo","admin\/AdminUtils\/map","admin\/AdminUtils\/mapAmap","admin\/AdminUtils\/mapBaidu","admin\/AdminUtils\/mapBeidou","admin\/AdminUtils\/mapSogou","admin\/AdminUtils\/mapTencent","admin\/AdminUtils\/qrcode","admin\/AdminUtils\/server","admin\/AdminUtils\/strrand","admin\/AdminUtils\/strtran","admin\/AdminUtils\/timestamp","admin\/AdminUtils\/tools","admin\/Api\/add","admin\/Api\/dele","admin\/Api\/disable","admin\/Api\/edit","admin\/Api\/info","admin\/Api\/list","admin\/Api\/unauth","admin\/ApiEnv\/add","admin\/ApiEnv\/dele","admin\/ApiEnv\/edit","admin\/ApiEnv\/info","admin\/ApiEnv\/list","admin\/Member\/add","admin\/Member\/avatar","admin\/Member\/dele","admin\/Member\/disable","admin\/Member\/edit","admin\/Member\/info","admin\/Member\/list","admin\/Member\/pwd","admin\/MemberLog\/dele","admin\/MemberLog\/info","admin\/MemberLog\/list","admin\/MemberLog\/stat","admin\/News\/add","admin\/News\/dele","admin\/News\/edit","admin\/News\/info","admin\/News\/ishide","admin\/News\/ishot","admin\/News\/isrec","admin\/News\/istop","admin\/News\/list","admin\/News\/upload","admin\/Region\/add","admin\/Region\/dele","admin\/Region\/edit","admin\/Region\/info","admin\/Region\/list","admin\/Setting\/info","admin\/Setting\/token","admin\/Setting\/verify","admin\/WechatConfig\/miniEdit","admin\/WechatConfig\/miniInfo","admin\/WechatConfig\/offiEdit","admin\/WechatConfig\/offiInfo","admin\/WechatConfig\/qrcode"];
+        $data['username']       = $user['username'];
+        $data['fullname']       = $user['fullname'];
+        $data['roles']          = ModuleService::getModuleUrlByUserId($id);
+        $data['menus']          = MenuService::getByUserId($id);
         // $data['nickname']      = $admin_user['nickname'];
         // $data['email']         = $admin_user['email'];
         // $data['phone']         = $admin_user['phone'];

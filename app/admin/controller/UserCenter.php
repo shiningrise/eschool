@@ -43,7 +43,7 @@ class UserCenter
     public function module()
     {
         $userid = user_id();
-        $data = ModuleService::getModuleUrlByUserId($userid);;
+        $data = ModuleService::getModuleUrlByUserId($userid);
         return success($data);
     }
 
