@@ -176,15 +176,7 @@ class MenuService{
                         {
                             if($tmpMenu['id'] == $pid)
                             {
-                                $found = false;
-                                foreach($menus as $newMenu)
-                                {
-                                    if($newMenu['id']==$pid){
-                                        $found = true;
-                                        break;
-                                    }
-                                }
-                                if($found == false)
+                                if(self::IsInMenu($menus,$pid)==false)
                                 {
                                     $menus[]=$tmpMenu;
                                     $pid=$tmpMenu['parent_id'];
