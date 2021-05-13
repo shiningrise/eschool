@@ -78,7 +78,7 @@ class Permission extends BaseController
         $param['name']        = Request::param('name/s', '');
         $param['code']        = Request::param('code/s', '');
         $param['sort']        = Request::param('sort/s', '');
-        $param['parent_id']   = Request::param('parent_id/d', '');
+        $param['parent_id']   = Request::param('parent_id/d', 0);
         validate(PermissionValidate::class)->scene('add')->check($param);
         $data = PermissionService::add($param);
 

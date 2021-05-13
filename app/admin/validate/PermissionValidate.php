@@ -18,7 +18,6 @@ class PermissionValidate extends Validate
         'id'          => ['require', 'checkId'],
         'name'        => ['require'],
         'code'        => ['require'],
-        'parent_id'   => ['require'],
     ];
 
     // 错误信息
@@ -26,7 +25,6 @@ class PermissionValidate extends Validate
         'id.require' => '缺少参数：权限ID',
         'name.require'   => '请输入权限名称',
         'code.require'   => '请输入权限代码',
-        'parent_id.require'         => '请输入父权限ID',
     ];
 
     // 验证场景
