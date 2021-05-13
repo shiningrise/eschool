@@ -17,22 +17,20 @@ class ModuleValidate extends Validate
     protected $rule = [
         'id'          => ['require', 'checkId'],
         'name'        => ['require'],
-        'parent_id'   => ['require'],
     ];
 
     // 错误信息
     protected $message = [
         'id.require' => '缺少参数：ID',
         'name.require'   => '请输入名称',
-        'parent_id.require'         => '请输入父ID',
     ];
 
     // 验证场景
     protected $scene = [
         'id'     => ['id'],
         'info'   => ['id'],
-        'add'    => ['name','parent_id'],
-        'edit'   => ['id', 'name','parent_id'],
+        'add'    => ['name'],
+        'edit'   => ['id', 'name'],
         'del'    => ['id'],
     ];
 

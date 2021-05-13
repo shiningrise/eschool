@@ -27,7 +27,7 @@ class ModuleService{
     public static function list($where = [], $page = 1, $limit = 10,  $order = [], $field = '')
     {
         if (empty($field)) {
-            $field = 'id,name,url,parent_id,permission_code,sort,remark';
+            $field = 'id,name,url,permission_code,sort,remark';
         }
 
         if (empty($order)) {

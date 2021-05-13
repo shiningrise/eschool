@@ -31,7 +31,6 @@ class Module extends BaseController
 
         $name               = Request::param('name/s', '');
         $url                = Request::param('url/s', '');
-        $parent_id          = Request::param('parent_id/d', -1);
         $permission_code    = Request::param('permission_code/s', '');
 
         $where = [];
@@ -43,9 +42,6 @@ class Module extends BaseController
         }
         if ($permission_code) {
             $where[] = ['permission_code', 'like', '%' . $permission_code . '%'];
-        }
-        if ($parent_id != -1) {
-            $where[] = ['parent_id', '=', $parent_id];
         }
         $order = [];
         $data = ModuleService::list($where, $page, $limit, $order);
@@ -82,7 +78,6 @@ class Module extends BaseController
     {
         $param['name']              = Request::param('name/s', '');
         $param['url']               = Request::param('url/s', '');
-        $param['parent_id']         = Request::param('parent_id/d', '');
         $param['permission_code']   = Request::param('permission_code/s', '');
         $param['sort']              = Request::param('sort/d', '');
         $param['remark']            = Request::param('remark/s', '');
@@ -110,7 +105,6 @@ class Module extends BaseController
         $param['id']                = Request::param('id/d', '');
         $param['name']              = Request::param('name/s', '');
         $param['url']               = Request::param('url/s', '');
-        $param['parent_id']         = Request::param('parent_id/d', '');
         $param['permission_code']   = Request::param('permission_code/s', '');
         $param['sort']              = Request::param('sort/d', '');
         $param['remark']            = Request::param('remark/s', '');
