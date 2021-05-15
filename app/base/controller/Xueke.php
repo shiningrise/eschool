@@ -72,8 +72,8 @@ class Xueke extends BaseController
         $param['shortname'] 			= Request::param('shortname/s', '');
         $param['name'] 			= Request::param('name/s', '');
         $param['sort'] 			= Request::param('sort/d', 0);
-        validate(ModuleValidate::class)->scene('add')->check($param);
-        $data = ModuleService::add($param);
+        validate(XuekeValidate::class)->scene('add')->check($param);
+        $data = XuekeService::add($param);
 
         return success($data);
     }
@@ -101,7 +101,7 @@ class Xueke extends BaseController
         $param['shortname']			= Request::param('shortname/s', '');
         $param['name']			= Request::param('name/s', '');
         $param['sort'] 			= Request::param('sort/d', 0);
-        
+
         validate(XuekeValidate::class)->scene('edit')->check($param);
 
         $data = XuekeService::edit($param);
