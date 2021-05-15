@@ -90,6 +90,7 @@ class Menu extends BaseController
         $param['permission_code']   = Request::param('permission_code/s', '');
         $param['sort']              = Request::param('sort/d',0);
         $param['parent_id']         = Request::param('parent_id/d', 0);
+        $param['is_disable']        = Request::param('is_disable/d', '');
 
         validate(MenuValidate::class)->scene('edit')->check($param);
 

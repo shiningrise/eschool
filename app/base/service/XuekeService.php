@@ -1,25 +1,24 @@
 <?php
-namespace app\admin\service;
-use app\admin\cache\ModuleCache;
+namespace app\base\service;
 use think\facade\Db;
 use think\facade\Filesystem;
 
-class ModuleService{
+class XuekeService{
     public static function list($where = [], $page = 1, $limit = 10,  $order = [], $field = '')
     {
         if (empty($field)) {
-            $field = 'id,name,url,permission_code,sort,remark';
+            $field = 'id,remark,ismain,active,code,shortname,name,sort';
         }
 
         if (empty($order)) {
             $order = ['sort' => 'asc'];
         }
 
-        $count = Db::name('module')
+        $count = Db::name('xueke')
             ->where($where)
             ->count('id');
 
-        $list = Db::name('module')
+        $list = Db::name('xueke')
             ->field($field)
             ->where($where)
             ->page($page)
@@ -41,29 +40,16 @@ class ModuleService{
 
     public static function info($id='')
     {
-        if (empty($id)) {
-            $id = request_pathinfo();
-        }
-        if (is_numeric($id)) {
-            $where[] = ['id', '=',  $id];
-        } else {
-            $where[] = ['url', '=',  $id];
-        }
-
-        $module = Db::name('module')
+        $where[] = ['id', '=',  $id];
+        $xueke = Db::name('xueke')
             ->where($where)
             ->find();
-
-        if (empty($module)) {
-            $module['url']=request_pathinfo();
-            Db::name('module')->insert($module);
-        }
-        return $module;
+        return $xueke;
     }
 
     public static function add($param)
     {
-        $id = Db::name('module')->insertGetId($param);
+        $id = Db::name('xueke')->insertGetId($param);
 
         if (empty($id)) {
             exception();
@@ -78,7 +64,7 @@ class ModuleService{
     public static function edit($param)
     {
         $id = $param['id'];
-        $res = Db::name('module')
+        $res = Db::name('xueke')
             ->where('id', $id)
             ->update($param);
 
@@ -93,25 +79,8 @@ class ModuleService{
 
     public static function del($id)
     {
-        Db::name('module')->delete($id);
+        Db::name('xueke')->delete($id);
         return $id;
     }
 
-    /*
-     * 获取用户可访问功能模块
-     */
-    public static function getModuleUrlByUserId($userid)
-    {
-        $permission_codes = PermissionService::getPermissionCodeByUserId($userid);
-        $list = Db::name('module')->select()->toArray();
-        $data = [];
-        foreach($list as $module)
-        {
-            if(in_array($module['permission_code'], $permission_codes)) 
-            {
-                $data[]=$module['url'];
-            }
-        }
-        return $data;
-    }
 }
