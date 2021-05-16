@@ -17,8 +17,8 @@ class Index
      */
     public function index()
     {
-        $str='ok';
-        $user = UserModel::find(2);
+        $str=request_pathinfo();
+        //$user = UserModel::find(2);
 
         //$res= $user->roles()->save(['rolename'=>'角色1']);
 
@@ -26,7 +26,7 @@ class Index
         // foreach ($roles as $role) {
         //     $str = $role->rolename . $str .'<br/>';
         // }
-        return success($user);
+        return success($str);
     }
 
     /**

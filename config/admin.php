@@ -26,10 +26,10 @@ return [
     'token_key' => 'Token',
     // 接口白名单
     'api_white_list' => [
-        'admin/UserLogin/verify',
-        'admin/UserLogin/login',
-        'admin/UserLogin/logout',
-        'admin/UserCenter/info',
+        '/admin/UserLogin/verify',
+        '/admin/UserLogin/login',
+        '/admin/UserLogin/logout',
+        '/admin/UserCenter/info',
     ],
     // 权限白名单
     'rule_white_list' => [

@@ -63,8 +63,11 @@ function exception(string $msg = '操作失败', int $code = 400)
  */
 function request_pathinfo()
 {
-    $request_pathinfo = app('http')->getName() . '/' . Request::pathinfo();
-
+    $appName = app('http')->getName();
+    if($appName)
+        $request_pathinfo = '/'. app('http')->getName() . '/' . Request::pathinfo();
+    else
+        $request_pathinfo = '/' . Request::pathinfo();
     return $request_pathinfo;
 }
 

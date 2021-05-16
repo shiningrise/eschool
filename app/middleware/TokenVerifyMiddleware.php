@@ -6,12 +6,13 @@
  * @LastEditTime : 2021-04-29
  */
 
-namespace app\admin\middleware;
+namespace app\middleware;
 
 use Closure;
 use think\Request;
 use think\Response;
 use think\facade\Config;
+use think\facade\Log;
 use app\admin\service\TokenService;
 
 class TokenVerifyMiddleware
@@ -25,10 +26,11 @@ class TokenVerifyMiddleware
      */
     public function handle($request, Closure $next)
     {
-        $menu_url       = request_pathinfo();
+        $url       = request_pathinfo();
         $api_white_list = Config::get('admin.api_white_list');
 
-        if (!in_array($menu_url, $api_white_list)) {
+        if (!in_array($url, $api_white_list)) {
+
             $token = token();
 
             if (empty($token)) {

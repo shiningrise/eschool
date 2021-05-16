@@ -7,5 +7,8 @@ return [
     // \think\middleware\LoadLangPack::class,
     // Session初始化
     // \think\middleware\SessionInit::class
-    \app\admin\middleware\AllowCrossDomain::class,
+    \app\middleware\AllowCrossDomain::class,
+    \app\middleware\UserlogMiddleware::class,
+    \app\middleware\TokenVerifyMiddleware::class,
+    \app\middleware\PermissionMiddleware::class,
 ];

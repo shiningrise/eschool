@@ -6,7 +6,7 @@
  * @LastEditTime : 2021-03-10
  */
 
-namespace app\admin\middleware;
+namespace app\middleware;
 
 use Closure;
 use think\Request;
