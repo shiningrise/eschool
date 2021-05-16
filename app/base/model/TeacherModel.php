@@ -5,9 +5,9 @@ namespace app\base\model;
 
 use think\Model;
 
-class XuenianxueqiModel extends Model
+class TeacherModel extends Model
 {
-    protected $name = 'xuenianxueqi';
+    protected $name = 'teacher';
     protected $schema = [
 
     ];
