@@ -55,10 +55,10 @@ class UserlogService
         foreach ($list as $k => $v) {
             $list[$k]['username'] = '';
             $list[$k]['fullname'] = '';
-            $admin_user = UserService::info($v['user_id']);
-            if ($admin_user) {
-                $list[$k]['username'] = $admin_user['username'];
-                $list[$k]['fullname'] = $admin_user['fullname'];
+            $user = UserService::info($v['user_id']);
+            if ($user) {
+                $list[$k]['username'] = $user['username'];
+                $list[$k]['fullname'] = $user['fullname'];
             }
 
             $list[$k]['module_name'] = '';

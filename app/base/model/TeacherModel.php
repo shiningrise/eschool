@@ -11,4 +11,9 @@ class TeacherModel extends Model
     protected $schema = [
 
     ];
+
+    public function banjis()
+    {
+        return $this->hasMany(Banji::class,'bzr_id');
+    }
 }

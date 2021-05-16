@@ -3,31 +3,22 @@ namespace app\base\service;
 use think\facade\Db;
 use think\facade\Filesystem;
 
-class TeacherService{
-    public static function getByName($name)
-    {
-        $where[] = ['name', '=',  $name];
-        $teacher = Db::name('teacher')
-            ->where($where)
-            ->find();
-        return $teacher;
-    }
-
+class BanjiService{
     public static function list($where = [], $page = 1, $limit = 10,  $order = [], $field = '')
     {
         if (empty($field)) {
-            $field = 'id,qy_userid,tel,remark,is_atbook,is_atschool,sort,name,username';
+            $field = 'id,beizhu,is_graduated,kelei,bh,ji,xueduan,bzr_id,name,bianhao';
         }
 
         if (empty($order)) {
-            $order = ['sort' => 'asc'];
+            $order = ['id' => 'desc'];
         }
 
-        $count = Db::name('teacher')
+        $count = Db::name('banji')
             ->where($where)
             ->count('id');
 
-        $list = Db::name('teacher')
+        $list = Db::name('banji')
             ->field($field)
             ->where($where)
             ->page($page)
@@ -35,6 +26,13 @@ class TeacherService{
             ->order($order)
             ->select()
             ->toArray();
+        foreach ($list as $k => $v) {
+            $list[$k]['bzr_name'] = '';
+            $bzr = TeacherService::info($v['bzr_id']);
+            if ($bzr) {
+                $list[$k]['bzr_name'] = $bzr['name'];
+            }
+        }
 
         $pages = ceil($count / $limit);
 
@@ -50,15 +48,25 @@ class TeacherService{
     public static function info($id='')
     {
         $where[] = ['id', '=',  $id];
-        $teacher = Db::name('teacher')
+        $banji = Db::name('banji')
             ->where($where)
             ->find();
-        return $teacher;
+        $bzr = TeacherService::info($banji['bzr_id']);
+        if ($bzr) {
+            $banji['bzr_name'] = $bzr['name'];
+        }
+        return $banji;
     }
 
     public static function add($param)
     {
-        $id = Db::name('teacher')->insertGetId($param);
+        $bzr_name = $param['bzr_name'];
+        unset($param['bzr_name']);
+        $teacher = TeacherService::getByName($bzr_name);
+        if($teacher){
+            $param['bzr_id']=$teacher['id'];
+        }
+        $id = Db::name('banji')->insertGetId($param);
 
         if (empty($id)) {
             exception();
@@ -72,8 +80,14 @@ class TeacherService{
     
     public static function edit($param)
     {
+        $bzr_name = $param['bzr_name'];
+        unset($param['bzr_name']);
+        $teacher = TeacherService::getByName($bzr_name);
+        if($teacher){
+            $param['bzr_id']=$teacher['id'];
+        }
         $id = $param['id'];
-        $res = Db::name('teacher')
+        $res = Db::name('banji')
             ->where('id', $id)
             ->update($param);
 
@@ -88,7 +102,7 @@ class TeacherService{
 
     public static function del($id)
     {
-        Db::name('teacher')->delete($id);
+        Db::name('banji')->delete($id);
         return $id;
     }
 

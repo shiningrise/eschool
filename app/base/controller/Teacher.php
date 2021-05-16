@@ -18,6 +18,8 @@ class Teacher extends BaseController
      * @Apidoc\Title("列表")
      * @Apidoc\Param("page", type="int", default="1", desc="页码")
      * @Apidoc\Param("limit", type="int", default="10", desc="pagesize")
+     * @Apidoc\Param("sort_field", type="string", default="", desc="sort_field")
+     * @Apidoc\Param("sort_type", type="string", default="", desc="sort_type")
      * @Apidoc\Returned(ref="return"),
      * @Apidoc\Returned("data", type="object", desc="返回数据",
      *      @Apidoc\Returned(ref="returnPaging"),
@@ -28,10 +30,23 @@ class Teacher extends BaseController
     {
         $page       = Request::param('page/d', 1);
         $limit      = Request::param('limit/d', 5);
+        $sort_field = Request::param('sort_field/s ', '');
+        $sort_type  = Request::param('sort_type/s', '');
 
+        $username   = Request::param('username/s', '');
+        $name   = Request::param('name/s', '');
         $where = [];
+        if ($username) {
+            $where[] = ['username', 'like', '%' . $username . '%'];
+        }
+        if ($name) {
+            $where[] = ['name', 'like', '%' . $name . '%'];
+        }
 
         $order = [];
+        if ($sort_field && $sort_type) {
+            $order = [$sort_field => $sort_type];
+        }
         $data = TeacherService::list($where, $page, $limit, $order);
 
         return success($data);
