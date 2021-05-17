@@ -224,4 +224,38 @@ class UserService{
 
         return $update;
     }
+
+        /**
+     * 用户更换头像
+     *
+     * @param array $param 头像信息
+     * 
+     * @return array
+     */
+    public static function avatar($param)
+    {
+        $id = $param['id'];
+        $avatar        = $param['avatar'];
+
+        $avatar_name = Filesystem::disk('public')
+            ->putFile('user', $avatar, function () use ($id) {
+                return $id . '/' . $id . '_avatar';
+            });
+
+        $update['avatar']      = 'storage/' . $avatar_name . '?t=' . date('YmdHis');
+
+        $res = Db::name('user')
+            ->where('id', $id)
+            ->update($update);
+
+        if (empty($res)) {
+            exception();
+        }
+        $user = UserService::info($id);
+
+        $data['id'] = $user['id'];
+        $data['avatar']        = file_url($user['avatar']);
+
+        return $data;
+    }
 }

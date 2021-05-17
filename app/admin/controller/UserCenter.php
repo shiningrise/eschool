@@ -121,7 +121,7 @@ class UserCenter
      */
     public function avatar()
     {
-        $param['admin_user_id'] = Request::param('admin_user_id/d', '');
+        $param['id'] = Request::param('user_id/d', '');
         $param['avatar']        = Request::file('avatar_file');
 
         validate(UserCenterValidate::class)->scene('avatar')->check($param);

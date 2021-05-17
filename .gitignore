@@ -5,3 +5,4 @@
 .env
 /public/index.html
 /public/favicon.ico
+public/storage/*
