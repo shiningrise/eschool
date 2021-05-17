@@ -25,7 +25,7 @@ class UserCenterService
         $user = UserService::info($id);
 
         $data['id'] = $user['id'];
-        //$data['avatar']        = $admin_user['avatar'];
+        $data['avatar']         = $user['avatar'];
         $data['username']       = $user['username'];
         $data['fullname']       = $user['fullname'];
         $data['roles']          = ModuleService::getModuleUrlByUserId($id);

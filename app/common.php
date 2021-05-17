@@ -217,3 +217,54 @@ function formatArray($array)
     }
     return $temarray;
 }
+
+/**
+ * 文件地址
+ * 协议/域名/文件路径
+ *
+ * @param string $file_path 文件路径
+ * 
+ * @return string
+ */
+function file_url($file_path = '')
+{
+    if (empty($file_path)) {
+        return '';
+    }
+
+    if (strpos($file_path, 'http') !== false) {
+        return $file_path;
+    }
+
+    $server_url = server_url();
+
+    if (stripos($file_path, '/') === 0) {
+        $res = $server_url . $file_path;
+    } else {
+        $res = $server_url . '/' . $file_path;
+    }
+
+    return $res;
+}
+
+/**
+ * 服务器地址
+ * 协议和域名
+ *
+ * @return string
+ */
+function server_url()
+{
+    if (isset($_SERVER['HTTPS']) && ('1' == $_SERVER['HTTPS'] || 'on' == strtolower($_SERVER['HTTPS']))) {
+        $http = 'https://';
+    } elseif (isset($_SERVER['SERVER_PORT']) && ('443' == $_SERVER['SERVER_PORT'])) {
+        $http = 'https://';
+    } else {
+        $http = 'http://';
+    }
+
+    $host = $_SERVER['HTTP_HOST'];
+    $res  = $http . $host;
+
+    return $res;
+}

@@ -61,7 +61,7 @@ class UserCenter
         validate(UserCenterValidate::class)->scene('info')->check($param);
 
         $data = UserCenterService::info($param['id']);
-
+        $data['avatar'] = file_url($data['avatar']);
         // if ($data['is_delete'] == 1) {
         //     exception('账号信息错误，请重新登录！');
         // }
