@@ -22,14 +22,11 @@ class TokenService
      */
     public static function create($user = [])
     {
-        $setting = SettingService::info();
-        $token   = $setting['token'];
-
         $key = Config::get('admin.token.key');  //密钥
-        $iss = $token['iss'];                   //签发者
+        $iss = Config::get('admin.token.iss');                  //签发者
         $iat = time();                          //签发时间
         $nbf = time();                          //生效时间
-        $exp = time() + $token['exp'] * 3600;   //过期时间
+        $exp = time() + Config::get('admin.token.exp') * 3600;   //过期时间
 
         $data = [
             'user_id'       => $user['id'],

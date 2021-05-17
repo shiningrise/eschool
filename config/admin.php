@@ -16,7 +16,7 @@ return [
         // 密钥
         'key' => '2V81aWjC9k8f',
         // 签发者
-        'iss' => 'yylAdmin',
+        'iss' => 'eschool',
         // 有效时间(小时)
         'exp' => 7200,
     ],
