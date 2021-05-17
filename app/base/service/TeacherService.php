@@ -92,4 +92,14 @@ class TeacherService{
         return $id;
     }
 
+    public static function multiDelete($ids)
+    {
+        foreach($ids as $id)
+        {
+            Db::name('teacher')->delete($id);
+        }
+        return $ids;
+    }
+    
+
 }

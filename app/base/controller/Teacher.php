@@ -1,6 +1,7 @@
 <?php
 namespace app\base\controller;
 
+use think\facade\Log;
 use think\facade\Request;
 use app\BaseController;
 use app\base\model\TeacherModel;
@@ -130,7 +131,7 @@ class Teacher extends BaseController
         return success($data);
     }
 
-        /**
+    /**
      * @Apidoc\Title("删除")
      * @Apidoc\Method("POST")
      * @Apidoc\Header(ref="headerAdmin")
@@ -147,5 +148,22 @@ class Teacher extends BaseController
 
         return success($data);
     }
+
+    /**
+     * @Apidoc\Title("删除")
+     * @Apidoc\Method("POST")
+     * @Apidoc\Header(ref="headerAdmin")
+     * @Apidoc\Param("id", type="int", default="1", desc="id")
+     * @Apidoc\Returned(ref="return")
+     */
+    public function multiDelete()
+    {
+        //$param['ids']    = input("post.permission_ids/a");
+        $param['ids']    = input();
+        $data = TeacherService::multiDelete($param['ids']);
+
+        return success($data);
+    }
+    
 }
 
