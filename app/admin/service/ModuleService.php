@@ -50,13 +50,11 @@ class ModuleService{
             $where[] = ['url', '=',  $id];
         }
 
-        $module = Db::name('module')
-            ->where($where)
-            ->find();
+        $module = Db::name('module')->where($where)->find();
 
         if (empty($module)) {
             $module['url']=request_pathinfo();
-            Db::name('module')->insert($module);
+            $module['id']=Db::name('module')->insertGetId($module);
         }
         return $module;
     }
