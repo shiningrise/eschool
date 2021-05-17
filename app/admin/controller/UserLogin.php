@@ -15,6 +15,7 @@ use app\admin\service\VerifyService;
 use app\admin\service\LoginService;
 use app\admin\service\SettingService;
 use hg\apidoc\annotation as Apidoc;
+use app\admin\utils\VerifyUtils;
 
 /**
  * @Apidoc\Title("登录退出")
@@ -30,11 +31,7 @@ class UserLogin
      */
     public function verify()
     {
-        $config = SettingService::info();
-        $verify = $config['verify'];
-
-        $data = VerifyService::create($verify);
-
+        $data = VerifyUtils::create();
         return success($data);
     }
 
@@ -54,10 +51,9 @@ class UserLogin
         $param['verify_id']   = Request::param('verify_id/s', '');
         $param['verify_code'] = Request::param('verify_code/s', '');
 
-        $config = SettingService::info();
-        $verify = $config['verify'];
-        if ($verify['switch']) {
-            validate(VerifyValidate::class)->scene('check')->check($param);
+        $check = VerifyUtils::check($param['verify_id'], $param['verify_code']);
+        if (empty($check)) {
+            exception('验证码错误');
         }
 
         validate(UserValidate::class)->scene('login')->check($param);

@@ -58,7 +58,7 @@ class SettingService
             // Token
             $token = unserialize($setting['token']);
             if (empty($token)) {
-                $token['iss'] = 'yylAdmin';  //签发者
+                $token['iss'] = 'eschool';  //签发者
                 $token['exp'] = 12;          //有效时间（小时）
             }
 
