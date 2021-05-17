@@ -7,7 +7,7 @@
  */
 
 namespace app\admin\cache;
-
+use think\facade\Config;
 use app\admin\service\SettingService;
 use app\admin\service\UserService;
 use think\facade\Cache;
@@ -42,9 +42,7 @@ class UserCache
         $key = self::key($user_id);
         $val = $user;
         if (empty($ttl)) {
-            $setting = SettingService::info();
-            $token   = $setting['token'];
-            $ttl     = $token['exp'] * 3600;
+            $ttl     = Config::get('admin.token.exp') * 3600;
         }
 
         $res = Cache::set($key, $val, $ttl);

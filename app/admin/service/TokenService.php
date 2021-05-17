@@ -30,8 +30,8 @@ class TokenService
 
         $data = [
             'user_id'       => $user['id'],
-            // 'login_time'    => $user['login_time'],
-            // 'login_ip'      => $user['login_ip'],
+            'login_time'    => $user['login_time'],
+            'login_ip'      => $user['login_ip'],
         ];
 
         $payload = [
