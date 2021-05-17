@@ -27,7 +27,7 @@ class LoginService
         $username = $param['username'];
         $password = md5($param['password']);
 
-        $field = 'id,username';
+        $field = 'id,username,login_num';
 
         $where[] = ['username', '=', $username];
         $where[] = ['password', '=', $password];
@@ -45,23 +45,15 @@ class LoginService
         //     exception('账号已被禁用，请联系管理员');
         // }
 
-        //$ip_info = IpInfoUtils::info();
+        $ip_info = IpInfoUtils::info();
 
         $user_id = $user['id'];
 
-        //$update['last_login_ip']     = $ip_info['ip'];
-        // $update['login_region'] = $ip_info['region'];
-        // $update['login_time']   = datetime();
-        // $update['login_num']    = $user['login_num'] + 1;
-        // Db::name('user')
-        //     ->where('id', $user_id)
-        //     ->update($update);
-
-        // $user_log['user_id'] = $user_id;
-        // $user_log['log_type']      = 1;
-        // $user_log['response_code'] = 200;
-        // $user_log['response_msg']  = '登录成功';
-        // AdminUserLogService::add($user_log);
+        $update['login_ip']     = $ip_info['ip'];
+        $update['login_region'] = $ip_info['region'];
+        $update['login_time']   = datetime();
+        $update['login_num']    = $user['login_num'] + 1;
+        Db::name('user')->where('id', $user_id)->update($update);
 
         UserCache::del($user_id);
         $user = UserService::UserInfo($user_id);
