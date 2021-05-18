@@ -268,3 +268,13 @@ function server_url()
 
     return $res;
 }
+
+/*
+*获取文件扩展名
+*/
+function getExt($url) 
+    { 
+        $path=parse_url($url); 
+        $str=explode('.',$path['path']); 
+        return $str[1]; 
+    } 

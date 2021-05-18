@@ -16,7 +16,7 @@ class UserValidate extends Validate
     // 验证规则
     protected $rule = [
         'id'    => ['require', 'checkId'],
-        'username'        => ['require'],
+        'username'      => ['require', 'checkUsername', 'length' => '2,32'],
     ];
 
     // 错误信息
@@ -48,6 +48,29 @@ class UserValidate extends Validate
         $id = $value;
 
         $role = UserService::info($id);
+
+        return true;
+    }
+
+    protected function checkUsername($value, $rule, $data = [])
+    {
+        $id         = isset($data['id']) ? $data['id'] : '';
+        $username   = $data['username'];
+
+        if ($id) {
+            $where[] = ['id', '<>', $id];
+        }
+        $where[] = ['username', '=', $username];
+        //$where[] = ['is_delete', '=', 0];
+
+        $teacher = Db::name('teacher')
+            ->field('id')
+            ->where($where)
+            ->find();
+
+        if ($teacher) {
+            return '账号已存在：' . $username;
+        }
 
         return true;
     }

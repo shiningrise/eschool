@@ -3,11 +3,17 @@ namespace app\base\controller;
 
 use think\facade\Log;
 use think\facade\Request;
+use think\facade\Env;
+use think\facade\Filesystem;
+use think\facade\Config;
+use think\facade\Db;
 use app\BaseController;
 use app\base\model\TeacherModel;
 use app\base\service\TeacherService;
 use app\base\validate\TeacherValidate;
 use hg\apidoc\annotation as Apidoc;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
 
 /**
  * @Apidoc\Title("")
@@ -165,5 +171,86 @@ class Teacher extends BaseController
         return success($data);
     }
     
+    /**
+     * @Apidoc\Title("删除")
+     * @Apidoc\Method("POST")
+     * @Apidoc\Header(ref="headerAdmin")
+     * @Apidoc\Param("excel_file", type="file", desc="上传的文件")
+     * @Apidoc\Returned(ref="return")
+     */
+    public function import()
+    {
+        $user_id = user_id();     
+        //ajax 文件跨域 验证
+        $request_method = $_SERVER['REQUEST_METHOD'];
+        if ($request_method === 'OPTIONS') {
+            header('Access-Control-Allow-Origin:*');
+            header('Access-Control-Allow-Credentials:true');
+            header('Access-Control-Allow-Methods:GET, POST, OPTIONS');
+            header('Access-Control-Max-Age:1728000');
+            header('Content-Type:text/plain charset=UTF-8');
+            header('Content-Length: 0',true);
+            header('status: 204');
+            header('HTTP/1.0 204 No Content');
+        }
+
+        $file = request()->file('excel_file');
+        if(!$file){
+             return error('请上传文件'); 
+        }
+        // 使用验证器验证上传的文件
+        validate(
+            [
+                'file' => [
+                    // 限制文件大小(单位b)，这里限制为4M
+                    'fileSize' => 4 * 1024 * 1024,
+                    // 限制文件后缀，多个后缀以英文逗号分割
+                    'fileExt'  => 'xlsx,xls'
+                ]
+            ],
+            [
+                'file.fileSize' => '文件太大',
+                'file.fileExt' => '不支持的文件后缀',
+            ]
+        )->check(['file' => $file]);
+
+        $savename = Filesystem::disk('public')->putFile('excel', $file);
+        $savename = str_replace("\\","/",$savename);
+        //$savename = app()->getRootPath() . 'public/' .'storage'.'/'.$savename;
+        $filenameExt = getExt($savename);        
+        if($filenameExt=="xlsx"){
+            $objReader = IOFactory::createReader('Xlsx');
+        }else{
+            $objReader = IOFactory::createReader('Xls');
+        }
+        $filepath = Config::get('filesystem.disks.public.root').'/'.$savename;
+        Log::info($filepath);
+        $objPHPExcel = $objReader->load($filepath);
+
+        // //读取默认工作表
+        $worksheet = $objPHPExcel->getSheet(0);
+        // //取得一共有多少行
+        $allRow = $worksheet->getHighestRow();
+        $data = [];
+
+        for ($i = 2; $i <= $allRow; $i++)
+        {
+            $data = array();
+            //序号	用户名	姓名	电话
+            $data['sort'] = $objPHPExcel->getActiveSheet()->getCell('A'.$i)->getValue();
+            $data['username'] = $objPHPExcel->getActiveSheet()->getCell('B'.$i)->getValue();
+            $data['name'] = $objPHPExcel->getActiveSheet()->getCell('C'.$i)->getValue();
+            $data['tel'] = $objPHPExcel->getActiveSheet()->getCell('D'.$i)->getValue();
+            //防止出现空白Excel导致mysql报错，对数据做下判断
+            if(empty($data['username']) && empty($data['name'])){
+                //跳出循环
+                break;
+            }
+            validate(TeacherValidate::class)->scene('import')->check($data);
+            //插入数据库
+            Db::name('teacher')->insert($data);
+        }
+        return success();
+    }
 }
 
