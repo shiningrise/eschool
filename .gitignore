@@ -5,4 +5,6 @@
 .env
 /public/index.html
 /public/favicon.ico
-public/storage/*
+
+/public/storage/excel/*
+/public/storage/user/*
