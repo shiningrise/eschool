@@ -224,7 +224,6 @@ class Teacher extends BaseController
             $objReader = IOFactory::createReader('Xls');
         }
         $filepath = Config::get('filesystem.disks.public.root').'/'.$savename;
-        Log::info($filepath);
         $objPHPExcel = $objReader->load($filepath);
 
         // //读取默认工作表
@@ -251,6 +250,14 @@ class Teacher extends BaseController
             Db::name('teacher')->insert($data);
         }
         return success();
+    }
+    
+    public function download()
+    {
+    	// download是系统封装的一个助手函数
+        $filepath = Config::get('filesystem.disks.public.root').'/download/teacher.xlsx';
+        Log::info($filepath);
+        return download($filepath , '教师导入模板.xlsx');
     }
 }
 

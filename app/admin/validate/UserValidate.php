@@ -9,6 +9,8 @@
 namespace app\admin\validate;
 
 use think\Validate;
+use think\facade\Db;
+
 use app\admin\service\UserService;
 
 class UserValidate extends Validate
@@ -16,7 +18,7 @@ class UserValidate extends Validate
     // 验证规则
     protected $rule = [
         'id'    => ['require', 'checkId'],
-        'username'      => ['require', 'checkUsername', 'length' => '2,32'],
+        'username'      => ['require'],
     ];
 
     // 错误信息
@@ -63,7 +65,7 @@ class UserValidate extends Validate
         $where[] = ['username', '=', $username];
         //$where[] = ['is_delete', '=', 0];
 
-        $teacher = Db::name('teacher')
+        $teacher = Db::name('user')
             ->field('id')
             ->where($where)
             ->find();
