@@ -1,6 +1,8 @@
 <?php
 namespace app\base\controller;
 
+use think\facade\Log;
+use think\facade\Db;
 use think\facade\Request;
 use app\BaseController;
 use app\base\model\ShoukebiaoModel;
@@ -9,11 +11,71 @@ use app\base\validate\ShoukebiaoValidate;
 use hg\apidoc\annotation as Apidoc;
 
 /**
- * @Apidoc\Title("")
+ * @Apidoc\Title("授课表")
  * @Apidoc\Group("base")
  */
 class Shoukebiao extends BaseController
 {
+    /**
+     * @Apidoc\Title("添加")
+     * @Apidoc\Method("POST")
+     * @Apidoc\Param("id", type="string", default="", desc="ID")
+     * @Apidoc\Param("teacher_id", type="string", default="", desc="教师")
+     * @Apidoc\Param("xueke_id", type="string", default="", desc="学科")
+     * @Apidoc\Param("banji_id", type="string", default="", desc="班级")
+     * @Apidoc\Returned(ref="return")
+     */
+    public function save()
+    {
+        $shoukebiaos = input();
+        foreach($shoukebiaos as $shoukebiao)
+        {
+            $where = [];
+            $where[] = ['banji_id', '=',$shoukebiao['banji_id']];
+            $where[] = ['xueke_id', '=',$shoukebiao['xueke_id']];
+            //$where[] = ['teacher_id', '=',$shoukebiao['teacher_id']];
+            $shoukebiaoOld = Db::name('shoukebiao')->where($where)->find();
+            if(!$shoukebiaoOld){
+                validate(ShoukebiaoValidate::class)->scene('add')->check($shoukebiao);
+                $data = ShoukebiaoService::add($shoukebiao);
+            }
+            else{
+                $shoukebiaoOld['teacher_id']=$shoukebiao['teacher_id'];
+                validate(ShoukebiaoValidate::class)->scene('edit')->check($shoukebiaoOld);
+                $data = ShoukebiaoService::edit($shoukebiaoOld);
+            }
+        }
+        $list = ShoukebiaoService::getActiveList();
+        foreach($list as $item){
+            $found = false;
+            foreach($shoukebiaos as $shoukebiao)
+            {
+                if($shoukebiao['banji_id']==$item['banji_id'] && $shoukebiao['xueke_id']==$item['xueke_id'] && $shoukebiao['teacher_id']==$item['teacher_id'])
+                {
+                    $found = true;
+                    break;
+                }
+            }
+            if($found==false){
+                ShoukebiaoService::del($item['id']);
+            }
+        }
+        // 'banji_id' => '83',
+        // 'xueke_id' => '2',
+        // 'teacher_id' => 1095,
+        return success();
+    }
+    /**
+     * @Apidoc\Title("授课表信息")
+     * @Apidoc\Returned(ref="return")
+     */
+    public function getTable()
+    {
+        $data = ShoukebiaoService::getTable();
+
+        return success($data);
+    }
+
     /**
      * @Apidoc\Title("列表")
      * @Apidoc\Param("page", type="int", default="1", desc="页码")

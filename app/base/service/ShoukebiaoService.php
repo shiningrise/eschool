@@ -4,6 +4,30 @@ use think\facade\Db;
 use think\facade\Filesystem;
 
 class ShoukebiaoService{
+
+    public static function getTable()
+    {
+        $data['banjis']=BanjiService::getUngraduatedBanjis();
+        $data['xuekes']=XuekeService::getActiveXuekes();
+        $data['shoukebiaos']=self::getActiveList();
+        $data['teachers']=TeacherService::getList();
+        return $data;
+    }
+
+    public static function getActiveList()
+    {
+        $where[] = ['b.is_graduated', '=',0];
+        $field = 's.id,teacher_id,xueke_id,banji_id';
+        $data = Db::table('shoukebiao')
+            ->alias('s')
+            ->join('banji b','s.banji_id = b.id')
+            ->join('xueke x','s.xueke_id = x.id')
+            ->field($field)
+            ->where($where)
+            ->select();
+        return $data;
+    }
+
     public static function list($where = [], $page = 1, $limit = 10,  $order = [], $field = '')
     {
         if (empty($field)) {
@@ -68,9 +92,9 @@ class ShoukebiaoService{
             ->where('id', $id)
             ->update($param);
 
-        if (empty($res)) {
-            exception();
-        }
+        // if (empty($res)) {
+        //     exception();
+        // }
 
         $param['id'] = $id;
 

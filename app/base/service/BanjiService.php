@@ -4,6 +4,22 @@ use think\facade\Db;
 use think\facade\Filesystem;
 
 class BanjiService{
+
+    public static function getUngraduatedBanjis()
+    {
+        $where[] = ['is_graduated', '=', 0];
+        $order = ['bianhao' => 'asc'];
+        $jiList = Db::table('banji')->where($where)->order($order)->select()->toArray();
+        return $jiList;
+    }
+
+    public static function getJi()
+    {
+        $where[] = ['is_graduated', '=', 0];
+        $jiList = Db::table('banji')->distinct(true)->field('ji')->where($where)->select()->toArray();
+        return $jiList;
+    }
+
     public static function getByName($name)
     {
         $where[] = ['name', '=',  $name];

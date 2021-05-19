@@ -4,6 +4,15 @@ use think\facade\Db;
 use think\facade\Filesystem;
 
 class XuekeService{
+
+    public static function getActiveXuekes()
+    {
+        $where[] = ['active', '=', 1];
+        $order = ['sort' => 'asc'];
+        $xuekeList = Db::name('xueke')->where($where)->order($order)->select()->toArray();
+        return $xuekeList;
+    }
+
     public static function list($where = [], $page = 1, $limit = 10,  $order = [], $field = '')
     {
         if (empty($field)) {

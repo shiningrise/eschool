@@ -8,19 +8,20 @@ class ShoukebiaoValidate extends Validate
 {
     protected $rule = [
         'id'          => ['require', 'checkId'],
-        'name'        => ['require'],
+        'banji_id'    => ['require'],
+        'xueke_id'    => ['require'],
+        'teacher_id'  => ['require'],
     ];
 	
     protected $message = [
         'id.require' => '缺少参数：ID',
-        'name.require'   => '请输入名称',
     ];
-	
+
     protected $scene = [
         'id'     => ['id'],
         'info'   => ['id'],
-        'add'    => ['name'],
-        'edit'   => ['id', 'name'],
+        'add'    => ['banji_id','xueke_id','teacher_id'],
+        'edit'   => ['id'],
         'del'    => ['id'],
     ];
 	

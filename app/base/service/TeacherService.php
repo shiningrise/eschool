@@ -4,6 +4,11 @@ use think\facade\Db;
 use think\facade\Filesystem;
 
 class TeacherService{
+    public static function getList()
+    {
+        $teacher = Db::name('teacher')->select()->toArray();
+        return $teacher;
+    }
     public static function getByName($name)
     {
         $where[] = ['name', '=',  $name];
