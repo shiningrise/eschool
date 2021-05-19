@@ -1,25 +1,24 @@
 <?php
 namespace app\base\controller;
 
-use think\facade\Log;
 use think\facade\Request;
 use think\facade\Env;
 use think\facade\Filesystem;
 use think\facade\Config;
 use think\facade\Db;
 use app\BaseController;
-use app\base\model\TeacherModel;
-use app\base\service\TeacherService;
-use app\base\validate\TeacherValidate;
+use app\base\model\StudentModel;
+use app\base\service\StudentService;
+use app\base\service\BanjiService;
+use app\base\validate\StudentValidate;
 use hg\apidoc\annotation as Apidoc;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
-
 /**
- * @Apidoc\Title("")
+ * @Apidoc\Title("学生")
  * @Apidoc\Group("base")
  */
-class Teacher extends BaseController
+class Student extends BaseController
 {
     /**
      * @Apidoc\Title("列表")
@@ -40,21 +39,21 @@ class Teacher extends BaseController
         $sort_field = Request::param('sort_field/s ', '');
         $sort_type  = Request::param('sort_type/s', '');
 
-        $username   = Request::param('username/s', '');
-        $name   = Request::param('name/s', '');
         $where = [];
-        if ($username) {
-            $where[] = ['username', 'like', '%' . $username . '%'];
-        }
+        $name               = Request::param('name/s', '');
         if ($name) {
-            $where[] = ['name', 'like', '%' . $name . '%'];
+            $where[] = ['name', 'LIKE','%' .$name. '%'];
+        }
+        $xh               = Request::param('xh/s', '');
+        if ($xh) {
+            $where[] = ['xh', 'LIKE','%' .$xh. '%'];
         }
 
         $order = [];
         if ($sort_field && $sort_type) {
             $order = [$sort_field => $sort_type];
         }
-        $data = TeacherService::list($where, $page, $limit, $order);
+        $data = StudentService::list($where, $page, $limit, $order);
 
         return success($data);
     }
@@ -67,8 +66,8 @@ class Teacher extends BaseController
     public function info()
     {
         $param['id'] = Request::param('id/d', '');
-        validate(TeacherValidate::class)->scene('info')->check($param);
-        $data = TeacherService::info($param['id']);
+        validate(StudentValidate::class)->scene('info')->check($param);
+        $data = StudentService::info($param['id']);
 
         return success($data);
     }
@@ -77,28 +76,34 @@ class Teacher extends BaseController
      * @Apidoc\Title("添加")
      * @Apidoc\Method("POST")
      * @Apidoc\Param("id", type="string", default="", desc="ID")
-     * @Apidoc\Param("qy_userid", type="string", default="", desc="企业号ID")
-     * @Apidoc\Param("tel", type="string", default="", desc="电话")
-     * @Apidoc\Param("remark", type="string", default="", desc="备注")
-     * @Apidoc\Param("is_atbook", type="string", default="", desc="在籍")
-     * @Apidoc\Param("is_atschool", type="string", default="", desc="在校？")
-     * @Apidoc\Param("sort", type="string", default="", desc="序号")
      * @Apidoc\Param("name", type="string", default="", desc="姓名")
-     * @Apidoc\Param("username", type="string", default="", desc="用户名")
+     * @Apidoc\Param("banji_id", type="string", default="", desc="班级ID")
+     * @Apidoc\Param("beizhu2", type="string", default="", desc="备注2")
+     * @Apidoc\Param("beizhu1", type="string", default="", desc="备注1")
+     * @Apidoc\Param("beatbook", type="string", default="", desc="在籍")
+     * @Apidoc\Param("beatschool", type="string", default="", desc="在校")
+     * @Apidoc\Param("idcardnum", type="string", default="", desc="身份证号")
+     * @Apidoc\Param("sex", type="string", default="", desc="性别")
+     * @Apidoc\Param("xh", type="string", default="", desc="学号")
+     * @Apidoc\Param("tel", type="string", default="", desc="电话")
+     * @Apidoc\Param("zzxh", type="string", default="", desc="中招序号")
      * @Apidoc\Returned(ref="return")
      */
     public function add()
     {
-        $param['qy_userid'] 			= Request::param('qy_userid/s', '');
-        $param['tel'] 			= Request::param('tel/s', '');
-        $param['remark'] 			= Request::param('remark/s', '');
-        $param['is_atbook'] 			= Request::param('is_atbook/s', '');
-        $param['is_atschool'] 			= Request::param('is_atschool/s', '');
-        $param['sort'] 			= Request::param('sort/s', '');
         $param['name'] 			= Request::param('name/s', '');
-        $param['username'] 			= Request::param('username/s', '');
-        validate(TeacherValidate::class)->scene('add')->check($param);
-        $data = TeacherService::add($param);
+        $param['banji_id'] 			= Request::param('banji_id/s', '');
+        $param['beizhu2'] 			= Request::param('beizhu2/s', '');
+        $param['beizhu1'] 			= Request::param('beizhu1/s', '');
+        $param['beatbook'] 			= Request::param('beatbook/s', '');
+        $param['beatschool'] 			= Request::param('beatschool/s', '');
+        $param['idcardnum'] 			= Request::param('idcardnum/s', '');
+        $param['sex'] 			= Request::param('sex/s', '');
+        $param['xh'] 			= Request::param('xh/s', '');
+        $param['tel'] 			= Request::param('tel/s', '');
+        $param['zzxh'] 			= Request::param('zzxh/s', '');
+        validate(StudentValidate::class)->scene('add')->check($param);
+        $data = StudentService::add($param);
 
         return success($data);
     }
@@ -108,36 +113,42 @@ class Teacher extends BaseController
      * @Apidoc\Method("POST")
      * @Apidoc\Header(ref="headerAdmin")
      * @Apidoc\Param("id", type="string", default="", desc="ID")
-     * @Apidoc\Param("qy_userid", type="string", default="", desc="企业号ID")
-     * @Apidoc\Param("tel", type="string", default="", desc="电话")
-     * @Apidoc\Param("remark", type="string", default="", desc="备注")
-     * @Apidoc\Param("is_atbook", type="string", default="", desc="在籍")
-     * @Apidoc\Param("is_atschool", type="string", default="", desc="在校？")
-     * @Apidoc\Param("sort", type="string", default="", desc="序号")
      * @Apidoc\Param("name", type="string", default="", desc="姓名")
-     * @Apidoc\Param("username", type="string", default="", desc="用户名")
+     * @Apidoc\Param("banji_id", type="string", default="", desc="班级ID")
+     * @Apidoc\Param("beizhu2", type="string", default="", desc="备注2")
+     * @Apidoc\Param("beizhu1", type="string", default="", desc="备注1")
+     * @Apidoc\Param("beatbook", type="string", default="", desc="在籍")
+     * @Apidoc\Param("beatschool", type="string", default="", desc="在校")
+     * @Apidoc\Param("idcardnum", type="string", default="", desc="身份证号")
+     * @Apidoc\Param("sex", type="string", default="", desc="性别")
+     * @Apidoc\Param("xh", type="string", default="", desc="学号")
+     * @Apidoc\Param("tel", type="string", default="", desc="电话")
+     * @Apidoc\Param("zzxh", type="string", default="", desc="中招序号")
      * @Apidoc\Returned(ref="return")
      */
     public function edit()
     {
         $param['id']			= Request::param('id/s', '');
-        $param['qy_userid']			= Request::param('qy_userid/s', '');
-        $param['tel']			= Request::param('tel/s', '');
-        $param['remark']			= Request::param('remark/s', '');
-        $param['is_atbook']			= Request::param('is_atbook/s', '');
-        $param['is_atschool']			= Request::param('is_atschool/s', '');
-        $param['sort']			= Request::param('sort/s', '');
         $param['name']			= Request::param('name/s', '');
-        $param['username']			= Request::param('username/s', '');
+        $param['banji_id']			= Request::param('banji_id/s', '');
+        $param['beizhu2']			= Request::param('beizhu2/s', '');
+        $param['beizhu1']			= Request::param('beizhu1/s', '');
+        $param['beatbook']			= Request::param('beatbook/s', '');
+        $param['beatschool']			= Request::param('beatschool/s', '');
+        $param['idcardnum']			= Request::param('idcardnum/s', '');
+        $param['sex']			= Request::param('sex/s', '');
+        $param['xh']			= Request::param('xh/s', '');
+        $param['tel']			= Request::param('tel/s', '');
+        $param['zzxh']			= Request::param('zzxh/s', '');
 
-        validate(TeacherValidate::class)->scene('edit')->check($param);
+        validate(StudentValidate::class)->scene('edit')->check($param);
 
-        $data = TeacherService::edit($param);
+        $data = StudentService::edit($param);
 
         return success($data);
     }
 
-    /**
+        /**
      * @Apidoc\Title("删除")
      * @Apidoc\Method("POST")
      * @Apidoc\Header(ref="headerAdmin")
@@ -148,9 +159,9 @@ class Teacher extends BaseController
     {
         $param['id'] = Request::param('id/d', '');
 
-        validate(TeacherValidate::class)->scene('del')->check($param);
+        validate(StudentValidate::class)->scene('del')->check($param);
 
-        $data = TeacherService::del($param['id']);
+        $data = StudentService::del($param['id']);
 
         return success($data);
     }
@@ -166,11 +177,11 @@ class Teacher extends BaseController
     {
         //$param['ids']    = input("post.permission_ids/a");
         $param['ids']    = input();
-        $data = TeacherService::multiDelete($param['ids']);
+        $data = StudentService::multiDelete($param['ids']);
 
         return success($data);
     }
-    
+
     /**
      * @Apidoc\Title("删除")
      * @Apidoc\Method("POST")
@@ -235,22 +246,30 @@ class Teacher extends BaseController
         for ($i = 2; $i <= $allRow; $i++)
         {
             $data = array();
-            //序号	用户名	姓名	电话
-            $data['sort'] = $objPHPExcel->getActiveSheet()->getCell('A'.$i)->getValue();
-            $data['username'] = $objPHPExcel->getActiveSheet()->getCell('B'.$i)->getValue();
-            $data['name'] = $objPHPExcel->getActiveSheet()->getCell('C'.$i)->getValue();
-            $data['tel'] = $objPHPExcel->getActiveSheet()->getCell('D'.$i)->getValue();
-            $data['is_atschool'] = true;
-            $data['is_atbook'] = true;
-            $data['qy_userid'] = $data['tel'];
+            //学号	姓名	性别	身份证号	在校	在籍	备注1	备注2	班级	中招序号	电话
+            $data['xh'] = $objPHPExcel->getActiveSheet()->getCell('A'.$i)->getValue();
+            $data['name'] = $objPHPExcel->getActiveSheet()->getCell('B'.$i)->getValue();
+            $data['sex'] = $objPHPExcel->getActiveSheet()->getCell('C'.$i)->getValue();
+            $data['idcardnum'] = $objPHPExcel->getActiveSheet()->getCell('D'.$i)->getValue();
+            $data['beatschool'] = $objPHPExcel->getActiveSheet()->getCell('E'.$i)->getValue();
+            $data['beatbook'] = $objPHPExcel->getActiveSheet()->getCell('F'.$i)->getValue();
+            $data['beizhu1'] = $objPHPExcel->getActiveSheet()->getCell('G'.$i)->getValue();
+            $data['beizhu2'] = $objPHPExcel->getActiveSheet()->getCell('H'.$i)->getValue();
+            $banji_name = $objPHPExcel->getActiveSheet()->getCell('I'.$i)->getValue();
+            $banji = BanjiService::getByName($banji_name);
+            if($banji){
+                $data['banji_id']=$banji['id'];
+            }
+            $data['zzxh'] = $objPHPExcel->getActiveSheet()->getCell('J'.$i)->getValue();
+            $data['tel'] = $objPHPExcel->getActiveSheet()->getCell('K'.$i)->getValue();
             //防止出现空白Excel导致mysql报错，对数据做下判断
-            if(empty($data['username']) && empty($data['name'])){
+            if(empty($data['xh']) && empty($data['name'])){
                 //跳出循环
                 break;
             }
-            validate(TeacherValidate::class)->scene('import')->check($data);
+            validate(StudentValidate::class)->scene('import')->check($data);
             //插入数据库
-            Db::name('teacher')->insert($data);
+            Db::name('student')->insert($data);
         }
         return success();
     }
@@ -264,8 +283,8 @@ class Teacher extends BaseController
     public function download()
     {
     	// download是系统封装的一个助手函数
-        $filepath = Config::get('filesystem.disks.public.root').'/download/teacher.xlsx';
-        return download($filepath , '教师导入模板.xlsx');
+        $filepath = Config::get('filesystem.disks.public.root').'/download/student.xlsx';
+        return download($filepath , '学生导入模板.xlsx');
     }
 }
 

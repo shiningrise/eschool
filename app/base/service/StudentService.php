@@ -3,31 +3,22 @@ namespace app\base\service;
 use think\facade\Db;
 use think\facade\Filesystem;
 
-class BanjiService{
-    public static function getByName($name)
-    {
-        $where[] = ['name', '=',  $name];
-        $banji = Db::name('banji')
-            ->where($where)
-            ->find();
-        return $banji;
-    }
-
+class StudentService{
     public static function list($where = [], $page = 1, $limit = 10,  $order = [], $field = '')
     {
         if (empty($field)) {
-            $field = 'id,beizhu,is_graduated,kelei,bh,ji,xueduan,bzr_id,name,bianhao';
+            $field = 'id,name,banji_id,beizhu2,beizhu1,beatbook,beatschool,idcardnum,sex,xh,tel,zzxh';
         }
 
         if (empty($order)) {
             $order = ['id' => 'desc'];
         }
 
-        $count = Db::name('banji')
+        $count = Db::name('student')
             ->where($where)
             ->count('id');
 
-        $list = Db::name('banji')
+        $list = Db::name('student')
             ->field($field)
             ->where($where)
             ->page($page)
@@ -35,11 +26,12 @@ class BanjiService{
             ->order($order)
             ->select()
             ->toArray();
+
         foreach ($list as $k => $v) {
-            $list[$k]['bzr_name'] = '';
-            $bzr = TeacherService::info($v['bzr_id']);
-            if ($bzr) {
-                $list[$k]['bzr_name'] = $bzr['name'];
+            $list[$k]['banji_name'] = '';
+            $banji = BanjiService::info($v['banji_id']);
+            if ($banji) {
+                $list[$k]['banji_name'] = $banji['name'];
             }
         }
 
@@ -57,25 +49,27 @@ class BanjiService{
     public static function info($id='')
     {
         $where[] = ['id', '=',  $id];
-        $banji = Db::name('banji')
+        $student = Db::name('student')
             ->where($where)
             ->find();
-        $bzr = TeacherService::info($banji['bzr_id']);
-        if ($bzr) {
-            $banji['bzr_name'] = $bzr['name'];
+        $banji = BanjiService::info($student['bnaji_id']);
+        if ($banji) {
+            $list['banji_name'] = $banji['name'];
         }
-        return $banji;
+
+        return $student;
     }
 
     public static function add($param)
     {
-        $bzr_name = $param['bzr_name'];
-        unset($param['bzr_name']);
-        $teacher = TeacherService::getByName($bzr_name);
-        if($teacher){
-            $param['bzr_id']=$teacher['id'];
+        $banji_name = $param['banji_name'];
+        unset($param['banji_name']);
+        $banji = BanjiService::getByName($banji_name);
+        if($banji){
+            $param['bnaji_id']=$banji['id'];
         }
-        $id = Db::name('banji')->insertGetId($param);
+
+        $id = Db::name('student')->insertGetId($param);
 
         if (empty($id)) {
             exception();
@@ -89,14 +83,15 @@ class BanjiService{
     
     public static function edit($param)
     {
-        $bzr_name = $param['bzr_name'];
-        unset($param['bzr_name']);
-        $teacher = TeacherService::getByName($bzr_name);
-        if($teacher){
-            $param['bzr_id']=$teacher['id'];
+        $banji_name = $param['banji_name'];
+        unset($param['banji_name']);
+        $banji = BanjiService::getByName($banji_name);
+        if($banji){
+            $param['bnaji_id']=$banji['id'];
         }
+
         $id = $param['id'];
-        $res = Db::name('banji')
+        $res = Db::name('student')
             ->where('id', $id)
             ->update($param);
 
@@ -111,8 +106,17 @@ class BanjiService{
 
     public static function del($id)
     {
-        Db::name('banji')->delete($id);
+        Db::name('student')->delete($id);
         return $id;
+    }
+
+    public static function multiDelete($ids)
+    {
+        foreach($ids as $id)
+        {
+            Db::name('student')->delete($id);
+        }
+        return $ids;
     }
 
 }

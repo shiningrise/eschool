@@ -14,6 +14,11 @@ class BanjiModel extends Model
 
     public function bzr()
     {
-        return $this->belongsTo(Banji::class);
+        return $this->belongsTo(Teacher::class);
+    }
+
+    public function students()
+    {
+        return $this->hasMany(student::class,'banji_id');
     }
 }
