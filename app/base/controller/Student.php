@@ -77,7 +77,7 @@ class Student extends BaseController
      * @Apidoc\Method("POST")
      * @Apidoc\Param("id", type="string", default="", desc="ID")
      * @Apidoc\Param("name", type="string", default="", desc="姓名")
-     * @Apidoc\Param("banji_id", type="string", default="", desc="班级ID")
+     * @Apidoc\Param("banji_name", type="string", default="", desc="班级名称")
      * @Apidoc\Param("beizhu2", type="string", default="", desc="备注2")
      * @Apidoc\Param("beizhu1", type="string", default="", desc="备注1")
      * @Apidoc\Param("beatbook", type="string", default="", desc="在籍")
@@ -92,7 +92,7 @@ class Student extends BaseController
     public function add()
     {
         $param['name'] 			= Request::param('name/s', '');
-        $param['banji_id'] 			= Request::param('banji_id/s', '');
+        $param['banji_name'] 			= Request::param('banji_name/s', '');
         $param['beizhu2'] 			= Request::param('beizhu2/s', '');
         $param['beizhu1'] 			= Request::param('beizhu1/s', '');
         $param['beatbook'] 			= Request::param('beatbook/s', '');
@@ -114,7 +114,7 @@ class Student extends BaseController
      * @Apidoc\Header(ref="headerAdmin")
      * @Apidoc\Param("id", type="string", default="", desc="ID")
      * @Apidoc\Param("name", type="string", default="", desc="姓名")
-     * @Apidoc\Param("banji_id", type="string", default="", desc="班级ID")
+     * @Apidoc\Param("banji_name", type="string", default="", desc="班级名称")
      * @Apidoc\Param("beizhu2", type="string", default="", desc="备注2")
      * @Apidoc\Param("beizhu1", type="string", default="", desc="备注1")
      * @Apidoc\Param("beatbook", type="string", default="", desc="在籍")
@@ -130,7 +130,7 @@ class Student extends BaseController
     {
         $param['id']			= Request::param('id/s', '');
         $param['name']			= Request::param('name/s', '');
-        $param['banji_id']			= Request::param('banji_id/s', '');
+        $param['banji_name']			= Request::param('banji_name/s', '');
         $param['beizhu2']			= Request::param('beizhu2/s', '');
         $param['beizhu1']			= Request::param('beizhu1/s', '');
         $param['beatbook']			= Request::param('beatbook/s', '');

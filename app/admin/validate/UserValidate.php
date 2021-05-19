@@ -18,7 +18,8 @@ class UserValidate extends Validate
     // 验证规则
     protected $rule = [
         'id'    => ['require', 'checkId'],
-        'username'      => ['require','checkUsername'],
+        'username'      => ['require'],
+        'password'      => ['require', 'length' => '6,18'],
     ];
 
     // 错误信息

@@ -52,9 +52,9 @@ class StudentService{
         $student = Db::name('student')
             ->where($where)
             ->find();
-        $banji = BanjiService::info($student['bnaji_id']);
+        $banji = BanjiService::info($student['banji_id']);
         if ($banji) {
-            $list['banji_name'] = $banji['name'];
+            $student['banji_name'] = $banji['name'];
         }
 
         return $student;
@@ -66,7 +66,7 @@ class StudentService{
         unset($param['banji_name']);
         $banji = BanjiService::getByName($banji_name);
         if($banji){
-            $param['bnaji_id']=$banji['id'];
+            $param['banji_id']=$banji['id'];
         }
 
         $id = Db::name('student')->insertGetId($param);
@@ -87,7 +87,7 @@ class StudentService{
         unset($param['banji_name']);
         $banji = BanjiService::getByName($banji_name);
         if($banji){
-            $param['bnaji_id']=$banji['id'];
+            $param['banji_id']=$banji['id'];
         }
 
         $id = $param['id'];
