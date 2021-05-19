@@ -9,6 +9,6 @@ return [
     // \think\middleware\SessionInit::class
     \app\middleware\AllowCrossDomain::class,
     \app\middleware\UserlogMiddleware::class,
-    //\app\middleware\TokenVerifyMiddleware::class,
-    // \app\middleware\PermissionMiddleware::class,
+    \app\middleware\TokenVerifyMiddleware::class,
+    \app\middleware\PermissionMiddleware::class,
 ];
