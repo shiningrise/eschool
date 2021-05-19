@@ -2,6 +2,8 @@
 namespace app\base\service;
 use think\facade\Db;
 use think\facade\Filesystem;
+use app\admin\service\RoleService;
+use app\admin\service\UserService;
 
 class TeacherService{
     public static function getList()
@@ -105,6 +107,24 @@ class TeacherService{
         }
         return $ids;
     }
-    
+
+    public static function init($ids)
+    {
+        foreach($ids as $id)
+        {
+            $teacher = Db::name('teacher')->find($id);
+            $user = Db::name('user')->where('username',$teacher['username'])->find();
+            if($user){
+                Db::name('user')->where('id', $user['id'])->update(['password' => md5('123456')]);
+            }else{
+                $param['username']        = $teacher['username'];
+                $param['fullname']        = $teacher['name'];
+                $role = RoleService::getByRolename('教师');
+                $param['roleids']=[$role['id']];
+                UserService::add($param);
+            }
+        }
+        return $ids;
+    }
 
 }

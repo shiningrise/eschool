@@ -159,7 +159,7 @@ class Teacher extends BaseController
      * @Apidoc\Title("批量删除")
      * @Apidoc\Method("POST")
      * @Apidoc\Header(ref="headerAdmin")
-     * @Apidoc\Param("id", type="int", default="1", desc="id")
+     * @Apidoc\Param("ids", type="int[]", default="1", desc="id数组")
      * @Apidoc\Returned(ref="return")
      */
     public function multiDelete()
@@ -171,6 +171,22 @@ class Teacher extends BaseController
         return success($data);
     }
     
+    /**
+     * @Apidoc\Title("批量删除")
+     * @Apidoc\Method("POST")
+     * @Apidoc\Header(ref="headerAdmin")
+     * @Apidoc\Param("ids", type="int[]", default="1", desc="id数组")
+     * @Apidoc\Returned(ref="return")
+     */
+    public function init()
+    {
+        //$param['ids']    = input("post.permission_ids/a");
+        $param['ids']    = input();
+        $data = TeacherService::init($param['ids']);
+
+        return success($data);
+    }
+
     /**
      * @Apidoc\Title("删除")
      * @Apidoc\Method("POST")

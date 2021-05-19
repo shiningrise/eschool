@@ -14,7 +14,10 @@ use think\facade\Filesystem;
 use app\admin\model\RoleModel;
 
 class RoleService{
-
+    public static function getByRolename($rolename){
+        $role = $count = Db::name('role')->where('rolename',$rolename)->find();
+        return $role;
+    }
     /**
      * 
      *
