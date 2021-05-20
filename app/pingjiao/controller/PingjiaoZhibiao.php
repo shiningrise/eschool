@@ -20,6 +20,7 @@ class PingjiaoZhibiao extends BaseController
      * @Apidoc\Param("limit", type="int", default="10", desc="pagesize")
      * @Apidoc\Param("sort_field", type="string", default="", desc="sort_field")
      * @Apidoc\Param("sort_type", type="string", default="", desc="sort_type")
+	 * @Apidoc\Param("pingjiao_id", type="int", default="0", desc="评教ID")
      * @Apidoc\Returned(ref="return"),
      * @Apidoc\Returned("data", type="object", desc="返回数据",
      *      @Apidoc\Returned(ref="returnPaging"),
@@ -32,9 +33,8 @@ class PingjiaoZhibiao extends BaseController
         $limit      = Request::param('limit/d', 5);
         $sort_field = Request::param('sort_field/s ', '');
         $sort_type  = Request::param('sort_type/s', '');
-
-        $where = [];
-
+        $pingjiao_id= Request::param('pingjiao_id/d', 0);
+        $where[] = ['pingjiao_id','=',$pingjiao_id];
         $order = [];
         if ($sort_field && $sort_type) {
             $order = [$sort_field => $sort_type];
