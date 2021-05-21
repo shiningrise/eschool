@@ -1,6 +1,7 @@
 <?php
 namespace app\pingjiao\controller;
 
+use think\facade\Log;
 use think\facade\Request;
 use app\BaseController;
 use app\pingjiao\model\Pingjiao_contentModel;
@@ -14,6 +15,25 @@ use hg\apidoc\annotation as Apidoc;
  */
 class PingjiaoContent extends BaseController
 {
+	public function save()
+	{
+		$data = input();
+		$rtn = Pingjiao_contentService::save($data);
+	    return success($rtn);
+	}
+	public function listShoukebiao()
+	{
+	    $id = user_id();
+		$data = Pingjiao_contentService::listShoukebiaoByUserId($id);
+	    return success($data);
+	}
+	
+	public function getPingjiaoTable()
+	{
+		$data = Pingjiao_contentService::getPingjiaoTable();
+	    return success($data);
+	}
+	
     /**
      * @Apidoc\Title("列表")
      * @Apidoc\Param("page", type="int", default="1", desc="页码")

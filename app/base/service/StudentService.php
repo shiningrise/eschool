@@ -6,6 +6,16 @@ use app\admin\service\RoleService;
 use app\admin\service\UserService;
 
 class StudentService{
+	public static function getByUsrId($user_id)
+	{
+		$user = Db::name('user')->where('id',$user_id)->find();
+		
+		$student = Db::name('student')
+		    ->where('xh',$user['username'])
+		    ->find();
+		return $student;
+	}
+	
     public static function list($where = [], $page = 1, $limit = 10,  $order = [], $field = '')
     {
         if (empty($field)) {

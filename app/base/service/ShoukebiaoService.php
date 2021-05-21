@@ -5,6 +5,23 @@ use think\facade\Filesystem;
 
 class ShoukebiaoService{
 
+	public static function listByStudentUserId($user_id)
+    {
+		$user = Db::name('user')->where('id',$user_id)->find();
+		$where[] = ['stu.xh', '=',$user['username']];
+		$field = 's.teacher_id,s.xueke_id,s.banji_id,t.name teacher,b.name banji,x.name xueke';
+        $data=Db::name('shoukebiao')
+        ->alias('s')
+        ->join('banji b','s.banji_id = b.id')
+		->join('student stu','stu.banji_id = b.id')
+		->join('xueke x','s.xueke_id = x.id')
+		->join('teacher t','s.teacher_id = t.id')
+        ->field($field)
+        ->where($where)
+        ->select()
+		->toArray();
+        return $data;
+    }
     public static function getTable()
     {
         $data['banjis']=BanjiService::getUngraduatedBanjis();
@@ -18,7 +35,7 @@ class ShoukebiaoService{
     {
         $where[] = ['b.is_graduated', '=',0];
         $field = 's.id,teacher_id,xueke_id,banji_id';
-        $data = Db::table('shoukebiao')
+        $data = Db::name('shoukebiao')
             ->alias('s')
             ->join('banji b','s.banji_id = b.id')
             ->join('xueke x','s.xueke_id = x.id')
