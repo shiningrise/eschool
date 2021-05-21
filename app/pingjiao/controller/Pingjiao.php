@@ -118,7 +118,7 @@ class Pingjiao extends BaseController
         return success($data);
     }
 
-        /**
+     /**
      * @Apidoc\Title("删除")
      * @Apidoc\Method("POST")
      * @Apidoc\Header(ref="headerAdmin")
@@ -135,5 +135,23 @@ class Pingjiao extends BaseController
 
         return success($data);
     }
+	
+	/**
+	 * @Apidoc\Title("删除")
+	 * @Apidoc\Method("POST")
+	 * @Apidoc\Header(ref="headerAdmin")
+	 * @Apidoc\Param("id", type="int", default="1", desc="id")
+	 * @Apidoc\Returned(ref="return")
+	 */
+	public function copy()
+	{
+	    $param['id'] = Request::param('id/d', '');
+	
+	    validate(PingjiaoValidate::class)->scene('copy')->check($param);
+	
+	    $data = PingjiaoService::copy($param['id']);
+	
+	    return success($data);
+	}
 }
 

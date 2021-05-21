@@ -83,4 +83,25 @@ class PingjiaoService{
         return $id;
     }
 
+	public static function copy($id)
+	{
+	    $pingjiao = Db::name('pingjiao')->where('id',$id)->find();
+		$oldPingjiaoId = $pingjiao['id'];
+		unset($pingjiao['id']);
+		$pingjiao['name'] = $pingjiao['name'] . '复制';
+		$param = self::add($pingjiao);
+		$zhibiaos = Db::name('pingjiao_zhibiao')->where('pingjiao_id',$oldPingjiaoId)->select()->toArray();
+		foreach($zhibiaos as $zhibiao){
+			unset($zhibiao['id']);
+			$zhibiao['pingjiao_id']=$param['id'];
+			Db::name('pingjiao_zhibiao')->insert($zhibiao);
+		}
+		$dengdis = Db::name('pingjiao_dengdi')->where('pingjiao_id',$oldPingjiaoId)->select()->toArray();
+		foreach($dengdis as $dengdi){
+			unset($dengdi['id']);
+			$dengdi['pingjiao_id']=$param['id'];
+			Db::name('pingjiao_dengdi')->insert($dengdi);
+		}
+	    return $param ['id'];
+	}
 }

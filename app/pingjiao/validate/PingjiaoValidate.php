@@ -22,6 +22,7 @@ class PingjiaoValidate extends Validate
         'add'    => ['name'],
         'edit'   => ['id', 'name'],
         'del'    => ['id'],
+        'copy'    => ['id'],
     ];
 	
     protected function checkId($value, $rule, $data = [])
