@@ -51,6 +51,7 @@ class Menu extends BaseController
      * @Apidoc\Param("permission_code", type="string", default="", desc="权限代码")
      * @Apidoc\Param("xh", type="string", default="", desc="xh")
      * @Apidoc\Param("parent_id", type="int", default="", desc="父菜单ID")
+     * @Apidoc\Param("hidden", type="int", default="", desc="隐藏？")
      * @Apidoc\Returned(ref="return")
      */
     public function add()
@@ -62,6 +63,7 @@ class Menu extends BaseController
         $param['sort']              = Request::param('sort/d', '');
         $param['parent_id']         = Request::param('parent_id/d', '');
         $param['is_disable']        = Request::param('is_disable/d', '');
+        $param['hidden']        	= Request::param('hidden/d', '');
         validate(MenuValidate::class)->scene('add')->check($param);
         $data = MenuService::add($param);
 
@@ -79,6 +81,7 @@ class Menu extends BaseController
      * @Apidoc\Param("permission_code", type="string", default="", desc="权限代码")
      * @Apidoc\Param("xh", type="string", default="", desc="xh")
      * @Apidoc\Param("parent_id", type="int", default="", desc="父菜单ID")
+     * @Apidoc\Param("hidden", type="int", default="", desc="隐藏？")
      * @Apidoc\Returned(ref="return")
      */
     public function edit()
@@ -91,7 +94,8 @@ class Menu extends BaseController
         $param['sort']              = Request::param('sort/d',0);
         $param['parent_id']         = Request::param('parent_id/d', 0);
         $param['is_disable']        = Request::param('is_disable/d', '');
-
+		$param['hidden']        	= Request::param('hidden/d', '');
+		
         validate(MenuValidate::class)->scene('edit')->check($param);
 
         $data = MenuService::edit($param);
