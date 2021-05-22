@@ -170,7 +170,7 @@ class Student extends BaseController
      * @Apidoc\Title("批量删除")
      * @Apidoc\Method("POST")
      * @Apidoc\Header(ref="headerAdmin")
-     * @Apidoc\Param("id", type="int", default="1", desc="id")
+     * @Apidoc\Param("ids", type="int[]", default="", desc="id数组")
      * @Apidoc\Returned(ref="return")
      */
     public function multiDelete()

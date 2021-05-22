@@ -139,4 +139,20 @@ class User extends BaseController
 
         return success($data);
     }
+	
+	/**
+	 * @Apidoc\Title("批量删除")
+	 * @Apidoc\Method("POST")
+	 * @Apidoc\Header(ref="headerAdmin")
+	 * @Apidoc\Param("ids", type="int[]", default="", desc="id数组")
+	 * @Apidoc\Returned(ref="return")
+	 */
+	public function multiDelete()
+	{
+	    //$param['ids']    = input("post.permission_ids/a");
+	    $param['ids']    = input();
+	    $data = UserService::multiDelete($param['ids']);
+	
+	    return success($data);
+	}
 }

@@ -10,6 +10,7 @@ namespace app\admin\service;
 
 use think\facade\Db;
 use think\facade\Log;
+use think\facade\Config;
 use think\facade\Filesystem;
 use app\admin\cache\UserCache;
 use app\admin\model\UserModel;
@@ -185,7 +186,10 @@ class UserService{
      */
     public static function del($id)
     {
-    //    Db::table('user')->delete($id);
+		$super_ids = Config::get('admin.super_ids');
+		if(in_array($id,$super_ids)){
+			exception('超级管理员不能删除');
+		}
         $user = UserModel::find($id);
         $dbroles = $user->roles;
         foreach ($dbroles as $dbrole) 
@@ -258,4 +262,17 @@ class UserService{
 
         return $data;
     }
+	
+	public static function multiDelete($ids)
+	{
+		$super_ids = Config::get('admin.super_ids');
+	    foreach($ids as $id)
+	    {
+			if(in_array($id,$super_ids)){
+				exception('超级管理员不能删除');
+			}
+	        Db::name('user')->delete($id);
+	    }
+	    return $ids;
+	}
 }
