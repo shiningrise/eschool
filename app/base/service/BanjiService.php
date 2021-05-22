@@ -4,7 +4,15 @@ use think\facade\Db;
 use think\facade\Filesystem;
 
 class BanjiService{
-
+	
+	//根据班级ID获取班级人数
+	public static function getBanjiRenshu($banji_id)
+    {
+        $where[] = ['banji_id', '=', $banji_id];
+        $renshu = Db::name('student')->where($where)->count();
+        return $renshu;
+    }
+	
     public static function getUngraduatedBanjis()
     {
         $where[] = ['is_graduated', '=', 0];

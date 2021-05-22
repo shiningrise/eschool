@@ -5,7 +5,105 @@ use think\facade\Log;
 use think\facade\Filesystem;
 use app\base\service\ShoukebiaoService;
 use app\base\service\StudentService;
+use app\base\service\BanjiService;
+use app\base\service\XuekeService;
+use app\base\service\TeacherService;
+use app\base\model\BanjiModel;
+use app\base\model\XuekeModel;
+use app\base\model\TeacherModel;
+
 class Pingjiao_contentService{
+	//获取已评人数
+	public static function getYipingRenshu($pingjiao_id,$banji_id,$xueke_id,$teacher_id)
+	{
+		$subQuery = Db::name('pingjiao_content')
+			->field('banji_id,xueke_id,teacher_id,student_id,sum(defen) as defen')
+		    ->where('pingjiao_id',$pingjiao_id)
+			->group('banji_id,xueke_id,teacher_id,student_id')
+		    ->buildSql();
+		$where = [];
+		$where[] = ['banji_id','=',$banji_id];
+		$where[] = ['xueke_id','=',$xueke_id];
+		$where[] = ['teacher_id','=',$teacher_id];
+		$data = Db::table($subQuery . ' a')
+			->field('banji_id,xueke_id,teacher_id,avg(defen) as defen,count(*) renshu')
+		    ->group('banji_id,xueke_id,teacher_id')
+			->where($where)
+		    ->count();
+		return $data;
+	}
+	//获取未评名单
+	public static function getWeipingMingdan($pingjiao_id,$banji_id,$xueke_id,$teacher_id)
+	{
+		$where = [];
+		$where[] = ['banji_id','=',$banji_id];
+		$where[] = ['xueke_id','=',$xueke_id];
+		$where[] = ['teacher_id','=',$teacher_id];
+		$where[] = ['pingjiao_id','=',$pingjiao_id];
+		
+		$yipingStudentIds = Db::name('pingjiao_content')
+			->field('student_id')
+		    ->where($where)
+			->group('banji_id,xueke_id,teacher_id,student_id')
+		    ->select()
+			->toArray();
+		
+		$students = Db::name('student')
+			->where('banji_id',$banji_id)
+		    ->select()
+			->toArray();
+		$data='';
+		foreach($students as $student){
+			if(!in_array($student['id'],$yipingStudentIds))
+			{
+				$data = $data . ','.$student['name'];
+			}
+		}
+		return $data;
+	}
+	//列出未评学生名单
+	public static function listPingjiaoState($pingjiao_id)
+	{
+		$data = ShoukebiaoService::getActiveList();
+		
+		foreach($data as &$item){
+			$banji = BanjiModel::find($item['banji_id']);
+			$item['banji']=$banji['name'];
+			$xueke = XuekeModel::find($item['xueke_id']);
+			$item['xueke']=$xueke['name'];
+			$teacher = TeacherModel::find($item['teacher_id']);
+			$item['teacher']=$teacher['name'];
+			$item['banjiRenshu']=BanjiService::getBanjiRenshu($item['banji_id']);
+			$item['yipingRenshu']=self::getYipingRenshu($pingjiao_id,$item['banji_id'],$item['xueke_id'],$item['teacher_id']);
+			$item['weiPingRenshu']=$item['banjiRenshu']-$item['yipingRenshu'];
+			$item['weiPingMingdan']=self::getWeipingMingdan($pingjiao_id,$item['banji_id'],$item['xueke_id'],$item['teacher_id']);
+		}
+	    return $data;
+	}
+	//评教统计教师分数
+	public static function listPingjiaoTongji($pingjiao_id)
+	{
+		$subQuery = Db::name('pingjiao_content')
+			->field('banji_id,xueke_id,teacher_id,student_id,sum(defen) as defen')
+		    ->where('pingjiao_id',$pingjiao_id)
+			->group('banji_id,xueke_id,teacher_id,student_id')
+		    ->buildSql();
+		$data = Db::table($subQuery . ' a')
+			->field('banji_id,xueke_id,teacher_id,avg(defen) as defen,count(*) renshu')
+		    ->group('banji_id,xueke_id,teacher_id')
+		    ->select()
+			->toArray();
+		foreach($data as &$item){
+			$banji = BanjiModel::find($item['banji_id']);
+			$item['banji']=$banji['name'];
+			$xueke = XuekeModel::find($item['xueke_id']);
+			$item['xueke']=$xueke['name'];
+			$teacher = TeacherModel::find($item['teacher_id']);
+			$item['teacher']=$teacher['name'];
+		}
+	    return $data;
+	}
+	//保存学生评价老师数据
 	public static function save($data)
 	{
 		$user_id = user_id();
@@ -18,7 +116,7 @@ class Pingjiao_contentService{
 		$rtn = 'ok';
 	    return $rtn;
 	}
-	
+	//获取学生评教表格
 	public static function getPingjiaoTable()
 	{
 		$order = ['id' => 'desc'];
@@ -47,7 +145,7 @@ class Pingjiao_contentService{
 		$data['dengdis']=$dengdis;
 	    return $data;
 	}
-	
+	//跟据学生用户ID获取学生评教授课表
 	public static function listShoukebiaoByUserId($user_id)
 	{
 		$data = ShoukebiaoService::listByStudentUserId($user_id);
@@ -79,8 +177,7 @@ class Pingjiao_contentService{
 				$item['disabled']=false;
 			}
 		}
-		
-		Log::info($data);
+	
 	    return $data;
 	}
     public static function list($where = [], $page = 1, $limit = 10,  $order = [], $field = '')

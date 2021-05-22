@@ -15,6 +15,18 @@ use hg\apidoc\annotation as Apidoc;
  */
 class PingjiaoContent extends BaseController
 {
+	public function listPingjiaoState()
+	{
+		$pingjiao_id       = Request::param('pingjiao_id/d', 0);
+		$data = Pingjiao_contentService::listPingjiaoState($pingjiao_id);
+		return success($data);
+	}
+	public function listPingjiaoTongji()
+	{
+		$pingjiao_id       = Request::param('pingjiao_id/d', 0);
+		$data = Pingjiao_contentService::listPingjiaoTongji($pingjiao_id);
+	    return success($data);
+	}
 	public function save()
 	{
 		$data = input();

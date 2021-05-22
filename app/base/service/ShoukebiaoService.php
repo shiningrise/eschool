@@ -5,6 +5,7 @@ use think\facade\Filesystem;
 
 class ShoukebiaoService{
 
+	//根据学生用户ID获取授课表用于学生评教
 	public static function listByStudentUserId($user_id)
     {
 		$user = Db::name('user')->where('id',$user_id)->find();
@@ -22,6 +23,8 @@ class ShoukebiaoService{
 		->toArray();
         return $data;
     }
+	
+	//获取现用授课表全部数据
     public static function getTable()
     {
         $data['banjis']=BanjiService::getUngraduatedBanjis();
@@ -30,7 +33,7 @@ class ShoukebiaoService{
         $data['teachers']=TeacherService::getList();
         return $data;
     }
-
+    //获取现用授课表主表内容
     public static function getActiveList()
     {
         $where[] = ['b.is_graduated', '=',0];
@@ -41,7 +44,8 @@ class ShoukebiaoService{
             ->join('xueke x','s.xueke_id = x.id')
             ->field($field)
             ->where($where)
-            ->select();
+            ->select()
+			->toArray();
         return $data;
     }
 
