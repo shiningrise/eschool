@@ -262,22 +262,19 @@ class Student extends BaseController
         for ($i = 2; $i <= $allRow; $i++)
         {
             $data = array();
-            //学号	姓名	性别	身份证号	在校	在籍	备注1	备注2	班级	中招序号	电话
+            //学号	姓名	性别	班级
             $data['xh'] = $objPHPExcel->getActiveSheet()->getCell('A'.$i)->getValue();
             $data['name'] = $objPHPExcel->getActiveSheet()->getCell('B'.$i)->getValue();
             $data['sex'] = $objPHPExcel->getActiveSheet()->getCell('C'.$i)->getValue();
-            $data['idcardnum'] = $objPHPExcel->getActiveSheet()->getCell('D'.$i)->getValue();
-            $data['beatschool'] = $objPHPExcel->getActiveSheet()->getCell('E'.$i)->getValue();
-            $data['beatbook'] = $objPHPExcel->getActiveSheet()->getCell('F'.$i)->getValue();
-            $data['beizhu1'] = $objPHPExcel->getActiveSheet()->getCell('G'.$i)->getValue();
-            $data['beizhu2'] = $objPHPExcel->getActiveSheet()->getCell('H'.$i)->getValue();
-            $banji_name = $objPHPExcel->getActiveSheet()->getCell('I'.$i)->getValue();
+            $data['beatschool'] = true;
+            $data['beatbook'] = true;
+            $banji_name = $objPHPExcel->getActiveSheet()->getCell('D'.$i)->getValue();
             $banji = BanjiService::getByName($banji_name);
             if($banji){
                 $data['banji_id']=$banji['id'];
-            }
-            $data['zzxh'] = $objPHPExcel->getActiveSheet()->getCell('J'.$i)->getValue();
-            $data['tel'] = $objPHPExcel->getActiveSheet()->getCell('K'.$i)->getValue();
+            }else{
+				exception('学生不能没有班级');
+			}
             //防止出现空白Excel导致mysql报错，对数据做下判断
             if(empty($data['xh']) && empty($data['name'])){
                 //跳出循环
