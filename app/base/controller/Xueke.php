@@ -31,7 +31,7 @@ class Xueke extends BaseController
 
         $where = [];
 
-        $order = [];
+        $order = ['code' => 'asc'];
         $data = XuekeService::list($where, $page, $limit, $order);
 
         return success($data);

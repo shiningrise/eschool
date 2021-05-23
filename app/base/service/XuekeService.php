@@ -8,7 +8,7 @@ class XuekeService{
     public static function getActiveXuekes()
     {
         $where[] = ['active', '=', 1];
-        $order = ['sort' => 'asc'];
+        $order = ['code' => 'asc'];
         $xuekeList = Db::name('xueke')->where($where)->order($order)->select()->toArray();
         return $xuekeList;
     }
