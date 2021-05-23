@@ -24,7 +24,7 @@ class MyStudent extends BaseController
 	 *      @Apidoc\Returned("list", type="array", desc="数据列表")
 	 * )
 	 */
-	public function listByBzrUserId()
+	public function listBanjiByBzrUserId()
 	{
 	    $user_id = user_id();
 	    $data = BanjiService::listByBzrUserId($user_id);
