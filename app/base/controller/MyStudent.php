@@ -2,6 +2,7 @@
 namespace app\base\controller;
 
 use think\facade\Request;
+use think\facade\Log;
 use app\BaseController;
 use app\base\model\BanjiModel;
 use app\base\service\BanjiService;
@@ -42,8 +43,10 @@ class MyStudent extends BaseController
 	public function listStudentByBanjiId()
 	{
 		$banji_id       = Request::param('banji_id/d', 0);
+		Log::info($banji_id);
 	    $data = StudentService::listByBanjiId($banji_id);
-	    return success($data);
+		Log::info($data);
+	    return success($data);		
 	}
 	
 	/**

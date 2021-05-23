@@ -4,6 +4,8 @@ use think\facade\Db;
 use think\facade\Filesystem;
 use think\facade\Log;
 use app\admin\model\UserModel;
+use app\admin\service\UserService;
+use app\admin\service\RoleService;
 use app\base\model\TeacherModel;
 
 class BanjiService{
@@ -156,4 +158,28 @@ class BanjiService{
         return $id;
     }
 
+	public static function initBzrRole($ids)
+    {
+        foreach($ids as $id)
+        {
+            $banji = Db::name('banji')->find($id);
+			if(!$banji['bzr_id'])
+				continue;
+			$teacher = Db::name('teacher')->find($banji['bzr_id']);
+            //$user = Db::name('user')->where('username',$teacher['username'])->find();
+			$user = UserModel::where('username',$teacher['username'])->find();
+			$role = RoleService::getByRolename('班主任');
+			$found = false;
+			foreach($user->roles as $dbrole)
+			{
+				if($dbrole['id']==$role['id'])
+				{
+					$found = true;
+				}
+			}
+			if($found == false)
+				$user->roles()->save($role['id']);
+        }
+        return $ids;
+    }
 }

@@ -151,5 +151,21 @@ class Banji extends BaseController
 
         return success($data);
     }
+	
+	/**
+	 * @Apidoc\Title("批量删除")
+	 * @Apidoc\Method("POST")
+	 * @Apidoc\Header(ref="headerAdmin")
+	 * @Apidoc\Param("ids", type="int[]", default="1", desc="id数组")
+	 * @Apidoc\Returned(ref="return")
+	 */
+	public function initBzrRole()
+	{
+	    //$param['ids']    = input("post.permission_ids/a");
+	    $param['ids']    = input();
+	    $data = BanjiService::initBzrRole($param['ids']);
+	
+	    return success($data);
+	}
 }
 
