@@ -45,5 +45,21 @@ class MyStudent extends BaseController
 	    $data = StudentService::listByBanjiId($banji_id);
 	    return success($data);
 	}
+	
+	/**
+	 * @Apidoc\Title("批量删除")
+	 * @Apidoc\Method("POST")
+	 * @Apidoc\Header(ref="headerAdmin")
+	 * @Apidoc\Param("ids", type="int[]", default="1", desc="id数组")
+	 * @Apidoc\Returned(ref="return")
+	 */
+	public function init()
+	{
+	    //$param['ids']    = input("post.permission_ids/a");
+	    $param['ids']    = input();
+	    $data = StudentService::init($param['ids']);
+	
+	    return success($data);
+	}
 }
 

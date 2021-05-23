@@ -150,10 +150,11 @@ class StudentService{
             $student = Db::name('student')->find($id);
             $user = Db::name('user')->where('username',$student['xh'])->find();
             if($user){
-                Db::name('user')->where('id', $user['id'])->update(['password' => md5('123456')]);
+                Db::name('user')->where('id', $user['id'])->update(['password' => md5($student['xh'])]);
             }else{
                 $param['username']        = $student['xh'];
                 $param['fullname']        = $student['name'];
+                $param['password']        = md5($student['xh']);
                 $role = RoleService::getByRolename('学生');
                 $param['roleids']=[$role['id']];
                 UserService::add($param);
