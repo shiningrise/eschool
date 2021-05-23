@@ -1,37 +1,24 @@
 <?php
-namespace app\base\service;
+namespace app\chengji\service;
 use think\facade\Db;
 use think\facade\Filesystem;
 
-class XuenianxueqiService{
-	public static function getById($id){
-		$data = Db::name('xuenianxueqi')->where('id',$id)->find();
-		return $data;
-	}
-	public static function listAll()
-	{
-		$order = ['xuenian' => 'desc','xueqi'=>'desc'];
-		$list = Db::name('xuenianxueqi')
-		    ->order($order)
-		    ->select()
-		    ->toArray();
-		return $list;
-	}
+class Kaoshi_xuekeService{
     public static function list($where = [], $page = 1, $limit = 10,  $order = [], $field = '')
     {
         if (empty($field)) {
-            $field = 'id,name,beizhu,startdate,ishidden,iscurrent,xueqi,xuenian,bianhao';
+            $field = 'id,name,xueke_id,kaoshi_id,havejiduka,zongfen,quanzhong,shijian';
         }
 
         if (empty($order)) {
             $order = ['id' => 'desc'];
         }
 
-        $count = Db::name('xuenianxueqi')
+        $count = Db::name('kaoshi_xueke')
             ->where($where)
             ->count('id');
 
-        $list = Db::name('xuenianxueqi')
+        $list = Db::name('kaoshi_xueke')
             ->field($field)
             ->where($where)
             ->page($page)
@@ -54,15 +41,15 @@ class XuenianxueqiService{
     public static function info($id='')
     {
         $where[] = ['id', '=',  $id];
-        $xuenianxueqi = Db::name('xuenianxueqi')
+        $kaoshi_xueke = Db::name('kaoshi_xueke')
             ->where($where)
             ->find();
-        return $xuenianxueqi;
+        return $kaoshi_xueke;
     }
 
     public static function add($param)
     {
-        $id = Db::name('xuenianxueqi')->insertGetId($param);
+        $id = Db::name('kaoshi_xueke')->insertGetId($param);
 
         if (empty($id)) {
             exception();
@@ -77,7 +64,7 @@ class XuenianxueqiService{
     public static function edit($param)
     {
         $id = $param['id'];
-        $res = Db::name('xuenianxueqi')
+        $res = Db::name('kaoshi_xueke')
             ->where('id', $id)
             ->update($param);
 
@@ -92,7 +79,7 @@ class XuenianxueqiService{
 
     public static function del($id)
     {
-        Db::name('xuenianxueqi')->delete($id);
+        Db::name('kaoshi_xueke')->delete($id);
         return $id;
     }
 
