@@ -6,6 +6,18 @@ use app\admin\service\RoleService;
 use app\admin\service\UserService;
 
 class StudentService{
+	
+	public static function listByBanjiId($banji_id)
+	{
+		$order = ['xh' => 'asc'];
+		$student = Db::name('student')
+		    ->where('banji_id',$banji_id)
+		    ->where('beatschool',true)
+			->order($order)
+		    ->select()
+			->toArray();
+		return $student;
+	}
 	public static function getByUsrId($user_id)
 	{
 		$user = Db::name('user')->where('id',$user_id)->find();

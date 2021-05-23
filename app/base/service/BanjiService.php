@@ -2,9 +2,26 @@
 namespace app\base\service;
 use think\facade\Db;
 use think\facade\Filesystem;
+use think\facade\Log;
+use app\admin\model\UserModel;
+use app\base\model\TeacherModel;
 
 class BanjiService{
-	
+	//根据班主任用户ID获取班级列表
+	public static function listByBzrUserId($user_id)
+	{
+		$user = UserModel::find($user_id);
+		$teacher = TeacherModel::where('username',$user['username'])->find();
+		if($teacher){
+			$where = [];
+			$where[] = ['bzr_id', '=', $teacher['id']];
+			$where[] = ['is_graduated', '=', false];
+			$data = Db::name('banji')->where($where)->select()->toArray();
+			return $data;
+		}
+		$data=[];
+	    return $data;
+	}
 	//根据班级ID获取班级人数
 	public static function getBanjiRenshu($banji_id)
     {
