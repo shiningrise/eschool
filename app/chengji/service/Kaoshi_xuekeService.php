@@ -2,12 +2,13 @@
 namespace app\chengji\service;
 use think\facade\Db;
 use think\facade\Filesystem;
+use app\base\service\XuekeService;
 
 class Kaoshi_xuekeService{
     public static function list($where = [], $page = 1, $limit = 10,  $order = [], $field = '')
     {
         if (empty($field)) {
-            $field = 'id,name,xueke_id,kaoshi_id,havejiduka,zongfen,quanzhong,shijian';
+            $field = 'id,xueke_id,kaoshi_id,havejiduka,zongfen,quanzhong,shijian';
         }
 
         if (empty($order)) {
@@ -26,6 +27,10 @@ class Kaoshi_xuekeService{
             ->order($order)
             ->select()
             ->toArray();
+		foreach($list as &$item){
+			$xueke = XuekeService::getById($item['xueke_id']);
+			$item['xueke_name']=$xueke['name'];
+		}
 
         $pages = ceil($count / $limit);
 

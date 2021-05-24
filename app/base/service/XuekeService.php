@@ -4,6 +4,10 @@ use think\facade\Db;
 use think\facade\Filesystem;
 
 class XuekeService{
+	public static function getById($id){
+		$data = Db::name('xueke')->where('id',$id)->find();
+		return $data;
+	}
 
     public static function getActiveXuekes()
     {

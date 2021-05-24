@@ -35,7 +35,7 @@ class KaoshiXueke extends BaseController
     public function list()
     {
         $page       = Request::param('page/d', 1);
-        $limit      = Request::param('limit/d', 5);
+        $limit      = Request::param('limit/d', 100);
         $sort_field = Request::param('sort_field/s ', '');
         $sort_type  = Request::param('sort_type/s', '');
 
@@ -68,7 +68,6 @@ class KaoshiXueke extends BaseController
      * @Apidoc\Title("添加")
      * @Apidoc\Method("POST")
      * @Apidoc\Param("id", type="string", default="", desc="ID")
-     * @Apidoc\Param("name", type="string", default="", desc="学科")
      * @Apidoc\Param("xueke_id", type="string", default="", desc="学科")
      * @Apidoc\Param("kaoshi_id", type="string", default="", desc="考试")
      * @Apidoc\Param("havejiduka", type="string", default="", desc="有机读卡？")
@@ -79,7 +78,6 @@ class KaoshiXueke extends BaseController
      */
     public function add()
     {
-        $param['name'] 			= Request::param('name/s', '');
         $param['xueke_id'] 			= Request::param('xueke_id/s', '');
         $param['kaoshi_id'] 			= Request::param('kaoshi_id/s', '');
         $param['havejiduka'] 			= Request::param('havejiduka/s', '');
@@ -97,7 +95,6 @@ class KaoshiXueke extends BaseController
      * @Apidoc\Method("POST")
      * @Apidoc\Header(ref="headerAdmin")
      * @Apidoc\Param("id", type="string", default="", desc="ID")
-     * @Apidoc\Param("name", type="string", default="", desc="学科")
      * @Apidoc\Param("xueke_id", type="string", default="", desc="学科")
      * @Apidoc\Param("kaoshi_id", type="string", default="", desc="考试")
      * @Apidoc\Param("havejiduka", type="string", default="", desc="有机读卡？")
@@ -109,7 +106,6 @@ class KaoshiXueke extends BaseController
     public function edit()
     {
         $param['id']			= Request::param('id/s', '');
-        $param['name']			= Request::param('name/s', '');
         $param['xueke_id']			= Request::param('xueke_id/s', '');
         $param['kaoshi_id']			= Request::param('kaoshi_id/s', '');
         $param['havejiduka']			= Request::param('havejiduka/s', '');
