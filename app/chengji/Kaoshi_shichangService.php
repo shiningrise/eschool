@@ -2,42 +2,23 @@
 namespace app\chengji\service;
 use think\facade\Db;
 use think\facade\Filesystem;
-use app\base\service\XuekeService;
 
-class Kaoshi_xuekeService{
-	public static function getByKaoshiId($kaoshi_id){
-		$field = 'x.id,xueke_id,xk.name xueke_name,kaoshi_id,havejiduka,zongfen,quanzhong,shijian';
-		$order = ['xk.code' => 'asc'];
-		$where[] = ['kaoshi_id','=',$kaoshi_id];
-		$list = Db::name('kaoshi_xueke')
-			->alias('x')
-			->join('xueke xk','xk.id = x.xueke_id')
-		    ->field($field)
-		    ->where($where)
-		    ->order($order)
-		    ->select()
-		    ->toArray();	
-		return $list;
-	}
-    public static function list($where = [], $page = 1, $limit = 100,  $order = [], $field = '')
+class Kaoshi_shichangService{
+    public static function list($where = [], $page = 1, $limit = 10,  $order = [], $field = '')
     {
         if (empty($field)) {
-            $field = 'x.id,xueke_id,xk.name xueke_name,kaoshi_id,havejiduka,zongfen,quanzhong,shijian';
+            $field = 'id,kaoshi_id,renshu,address,num';
         }
 
         if (empty($order)) {
-            $order = ['xk.code' => 'asc'];
+            $order = ['id' => 'desc'];
         }
 
-        $count = Db::name('kaoshi_xueke')
-			->alias('x')
-			->join('xueke xk','xk.id = x.xueke_id')
+        $count = Db::name('kaoshi_shichang')
             ->where($where)
-            ->count('x.id');
+            ->count('id');
 
-        $list = Db::name('kaoshi_xueke')
-			->alias('x')
-			->join('xueke xk','xk.id = x.xueke_id')
+        $list = Db::name('kaoshi_shichang')
             ->field($field)
             ->where($where)
             ->page($page)
@@ -45,7 +26,7 @@ class Kaoshi_xuekeService{
             ->order($order)
             ->select()
             ->toArray();
-			
+
         $pages = ceil($count / $limit);
 
         $data['count'] = $count;
@@ -60,15 +41,15 @@ class Kaoshi_xuekeService{
     public static function info($id='')
     {
         $where[] = ['id', '=',  $id];
-        $kaoshi_xueke = Db::name('kaoshi_xueke')
+        $kaoshi_shichang = Db::name('kaoshi_shichang')
             ->where($where)
             ->find();
-        return $kaoshi_xueke;
+        return $kaoshi_shichang;
     }
 
     public static function add($param)
     {
-        $id = Db::name('kaoshi_xueke')->insertGetId($param);
+        $id = Db::name('kaoshi_shichang')->insertGetId($param);
 
         if (empty($id)) {
             exception();
@@ -83,7 +64,7 @@ class Kaoshi_xuekeService{
     public static function edit($param)
     {
         $id = $param['id'];
-        $res = Db::name('kaoshi_xueke')
+        $res = Db::name('kaoshi_shichang')
             ->where('id', $id)
             ->update($param);
 
@@ -98,7 +79,7 @@ class Kaoshi_xuekeService{
 
     public static function del($id)
     {
-        Db::name('kaoshi_xueke')->delete($id);
+        Db::name('kaoshi_shichang')->delete($id);
         return $id;
     }
 

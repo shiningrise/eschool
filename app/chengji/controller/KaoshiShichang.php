@@ -3,23 +3,17 @@ namespace app\chengji\controller;
 
 use think\facade\Request;
 use app\BaseController;
-use app\chengji\model\Kaoshi_xuekeModel;
-use app\chengji\service\Kaoshi_xuekeService;
-use app\chengji\validate\Kaoshi_xuekeValidate;
+use app\chengji\model\Kaoshi_shichangModel;
+use app\chengji\service\Kaoshi_shichangService;
+use app\chengji\validate\Kaoshi_shichangValidate;
 use hg\apidoc\annotation as Apidoc;
-use app\base\service\XuekeService;
 
 /**
- * @Apidoc\Title("考试学科")
+ * @Apidoc\Title("试场")
  * @Apidoc\Group("chengji")
  */
-class KaoshiXueke extends BaseController
+class KaoshiShichang extends BaseController
 {
-	public function getActiveXuekes()
-	{
-		$data = XuekeService::getActiveXuekes();
-		return success($data);
-	}
     /**
      * @Apidoc\Title("列表")
      * @Apidoc\Param("page", type="int", default="1", desc="页码")
@@ -35,19 +29,19 @@ class KaoshiXueke extends BaseController
     public function list()
     {
         $page       = Request::param('page/d', 1);
-        $limit      = Request::param('limit/d', 100);
+        $limit      = Request::param('limit/d', 5);
         $sort_field = Request::param('sort_field/s ', '');
         $sort_type  = Request::param('sort_type/s', '');
-		
-        $where = [];
-        $kaoshi_id      = Request::param('kaoshi_id/d', 100);
+
+		$where = [];
+		$kaoshi_id      = Request::param('kaoshi_id/d', 100);
         $where[] = ['kaoshi_id','=',$kaoshi_id];
 
-        $order = [];
+        $order = ['num'=>'asc'];
         if ($sort_field && $sort_type) {
             $order = [$sort_field => $sort_type];
         }
-        $data = Kaoshi_xuekeService::list($where, $page, $limit, $order);
+        $data = Kaoshi_shichangService::list($where, $page, $limit, $order);
 
         return success($data);
     }
@@ -60,8 +54,8 @@ class KaoshiXueke extends BaseController
     public function info()
     {
         $param['id'] = Request::param('id/d', '');
-        validate(Kaoshi_xuekeValidate::class)->scene('info')->check($param);
-        $data = Kaoshi_xuekeService::info($param['id']);
+        validate(Kaoshi_shichangValidate::class)->scene('info')->check($param);
+        $data = Kaoshi_shichangService::info($param['id']);
 
         return success($data);
     }
@@ -70,24 +64,20 @@ class KaoshiXueke extends BaseController
      * @Apidoc\Title("添加")
      * @Apidoc\Method("POST")
      * @Apidoc\Param("id", type="string", default="", desc="ID")
-     * @Apidoc\Param("xueke_id", type="string", default="", desc="学科")
      * @Apidoc\Param("kaoshi_id", type="string", default="", desc="考试")
-     * @Apidoc\Param("havejiduka", type="string", default="", desc="有机读卡？")
-     * @Apidoc\Param("zongfen", type="string", default="", desc="总分")
-     * @Apidoc\Param("quanzhong", type="string", default="", desc="权重")
-     * @Apidoc\Param("shijian", type="string", default="", desc="时间")
+     * @Apidoc\Param("renshu", type="string", default="", desc="人数")
+     * @Apidoc\Param("address", type="string", default="", desc="地址")
+     * @Apidoc\Param("num", type="string", default="", desc="试场号")
      * @Apidoc\Returned(ref="return")
      */
     public function add()
     {
-        $param['xueke_id'] 			= Request::param('xueke_id/s', '');
         $param['kaoshi_id'] 			= Request::param('kaoshi_id/s', '');
-        $param['havejiduka'] 			= Request::param('havejiduka/s', '');
-        $param['zongfen'] 			= Request::param('zongfen/s', '');
-        $param['quanzhong'] 			= Request::param('quanzhong/s', '');
-        $param['shijian'] 			= Request::param('shijian/s', '');
-        validate(Kaoshi_xuekeValidate::class)->scene('add')->check($param);
-        $data = Kaoshi_xuekeService::add($param);
+        $param['renshu'] 			= Request::param('renshu/s', '');
+        $param['address'] 			= Request::param('address/s', '');
+        $param['num'] 			= Request::param('num/s', '');
+        validate(Kaoshi_shichangValidate::class)->scene('add')->check($param);
+        $data = Kaoshi_shichangService::add($param);
 
         return success($data);
     }
@@ -97,27 +87,23 @@ class KaoshiXueke extends BaseController
      * @Apidoc\Method("POST")
      * @Apidoc\Header(ref="headerAdmin")
      * @Apidoc\Param("id", type="string", default="", desc="ID")
-     * @Apidoc\Param("xueke_id", type="string", default="", desc="学科")
      * @Apidoc\Param("kaoshi_id", type="string", default="", desc="考试")
-     * @Apidoc\Param("havejiduka", type="string", default="", desc="有机读卡？")
-     * @Apidoc\Param("zongfen", type="string", default="", desc="总分")
-     * @Apidoc\Param("quanzhong", type="string", default="", desc="权重")
-     * @Apidoc\Param("shijian", type="string", default="", desc="时间")
+     * @Apidoc\Param("renshu", type="string", default="", desc="人数")
+     * @Apidoc\Param("address", type="string", default="", desc="地址")
+     * @Apidoc\Param("num", type="string", default="", desc="试场号")
      * @Apidoc\Returned(ref="return")
      */
     public function edit()
     {
         $param['id']			= Request::param('id/s', '');
-        $param['xueke_id']			= Request::param('xueke_id/s', '');
         $param['kaoshi_id']			= Request::param('kaoshi_id/s', '');
-        $param['havejiduka']			= Request::param('havejiduka/s', '');
-        $param['zongfen']			= Request::param('zongfen/s', '');
-        $param['quanzhong']			= Request::param('quanzhong/s', '');
-        $param['shijian']			= Request::param('shijian/s', '');
+        $param['renshu']			= Request::param('renshu/s', '');
+        $param['address']			= Request::param('address/s', '');
+        $param['num']			= Request::param('num/s', '');
 
-        validate(Kaoshi_xuekeValidate::class)->scene('edit')->check($param);
+        validate(Kaoshi_shichangValidate::class)->scene('edit')->check($param);
 
-        $data = Kaoshi_xuekeService::edit($param);
+        $data = Kaoshi_shichangService::edit($param);
 
         return success($data);
     }
@@ -133,9 +119,9 @@ class KaoshiXueke extends BaseController
     {
         $param['id'] = Request::param('id/d', '');
 
-        validate(Kaoshi_xuekeValidate::class)->scene('del')->check($param);
+        validate(Kaoshi_shichangValidate::class)->scene('del')->check($param);
 
-        $data = Kaoshi_xuekeService::del($param['id']);
+        $data = Kaoshi_shichangService::del($param['id']);
 
         return success($data);
     }

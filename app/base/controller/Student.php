@@ -199,7 +199,7 @@ class Student extends BaseController
     }
 
     /**
-     * @Apidoc\Title("删除")
+     * @Apidoc\Title("导入")
      * @Apidoc\Method("POST")
      * @Apidoc\Header(ref="headerAdmin")
      * @Apidoc\Param("excel_file", type="file", desc="上传的文件")
