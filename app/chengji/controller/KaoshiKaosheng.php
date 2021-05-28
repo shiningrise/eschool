@@ -22,7 +22,64 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
  */
 class KaoshiKaosheng extends BaseController
 {
+	/**
+	 * @Apidoc\Title("试场座位表打印")
+	 * @Apidoc\Param("kaoshi_id", type="int", default="0", desc="考试ID")
+	 * @Apidoc\Returned(ref="return"),
+	 * @Apidoc\Returned("data", type="object", desc="返回数据")
+	 */
+	public function listForShichangPrint(){
+		$kaoshi_id  = Request::param('kaoshi_id/d', 0);
+		$kaoshi = KaoshiService::info($kaoshi_id);
+		$data['kaoshi']=$kaoshi;
+		$shichangs = Kaoshi_shichangService::getByKaoshiId($kaoshi_id);
+		foreach($shichangs as &$shichang){
+			$kaoshengs = Kaoshi_kaoshengService::listByKaohsiIdAndShingchangNum($kaoshi_id,$shichang['num']);
+			$shichang['kaoshengs'] = $kaoshengs;
+		}
+		$data['shichangs']=$shichangs;
+		return success($data);
+	}
 	
+	/**
+	 * @Apidoc\Title("班级座位表打印")
+	 * @Apidoc\Param("kaoshi_id", type="int", default="0", desc="考试ID")
+	 * @Apidoc\Returned(ref="return"),
+	 * @Apidoc\Returned("data", type="object", desc="返回数据")
+	 */
+	public function listForBanjiPrint(){
+		$kaoshi_id  = Request::param('kaoshi_id/d', 0);
+		$kaoshi = KaoshiService::info($kaoshi_id);
+		$data['kaoshi']=$kaoshi;
+		$shichangs = Kaoshi_shichangService::getByKaoshiId($kaoshi_id);
+		$banjis = Kaoshi_kaoshengService::listKaoshiBanjis($kaoshi_id);
+		foreach($banjis as &$banji){
+			$kaoshengs = Kaoshi_kaoshengService::listByKaohsiIdAndBanjiId($kaoshi_id,$banji['id']);
+			$count = count($kaoshengs);
+			$banji['data1']=[];
+			for($i=0;$i<20 && $i< $count;$i++){
+				foreach($shichangs as $shichang){
+					if($shichang['num'] ==$kaoshengs[$i]['shichangnum'] ){
+						$kaoshengs[$i]['address']=$shichang['address'];
+						break;
+					}
+				}
+				$banji['data1'][] = $kaoshengs[$i];
+			}
+			$banji['data2']=[];
+			for($i=20;$i<$count;$i++){
+				foreach($shichangs as $shichang){
+					if($shichang['num'] ==$kaoshengs[$i]['shichangnum'] ){
+						$kaoshengs[$i]['address']=$shichang['address'];
+						break;
+					}
+				}
+				$banji['data2'][] = $kaoshengs[$i];
+			}
+		}
+		$data['banjis']=$banjis;
+		return success($data);
+	}
 	/**
 	 * @Apidoc\Title("导出考生")
 	 * @Apidoc\Param("kaoshi_id", type="int", default="0", desc="考试ID")
@@ -30,7 +87,7 @@ class KaoshiKaosheng extends BaseController
 	 * @Apidoc\Returned("data", type="object", desc="返回数据")
 	 */
 	public function outExcel(){
-		$kaoshi_id  = Request::param('kaoshi_id/d', 1);
+		$kaoshi_id  = Request::param('kaoshi_id/d', 0);
 		$kaoshi = KaoshiService::info($kaoshi_id);
 		$kaoshengs = Kaoshi_kaoshengService::listByKaoshiId($kaoshi_id);
 		

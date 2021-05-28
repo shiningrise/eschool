@@ -4,6 +4,59 @@ use think\facade\Db;
 use think\facade\Filesystem;
 
 class Kaoshi_kaoshengService{
+	
+	//根据考试ID与试场号列出考生
+	public static function listByKaohsiIdAndShingchangNum($kaoshi_id,$shichang_num){
+		$field = 's.xh,s.name,k.*';
+		$order = ['k.zhunkaozhenghao' => 'asc'];
+		$where = [];
+		$where[] = ['kaoshi_id','=',$kaoshi_id];
+		$where[] = ['k.shichangnum','=',$shichang_num];
+		$data = Db::name('kaoshi_kaosheng')
+			->alias('k')
+			->join('student s','s.id = k.student_id')
+		    ->field($field)
+		    ->where($where)
+		    ->order($order)
+		    ->select()
+		    ->toArray();
+		return $data;
+	}
+	
+	//根据考试与班级按学号列出考生
+	public static function listByKaohsiIdAndBanjiId($kaoshi_id,$banji_id){
+		$field = 's.xh,s.name,k.*';
+		$order = ['s.xh' => 'asc'];
+		$where = [];
+		$where[] = ['kaoshi_id','=',$kaoshi_id];
+		$where[] = ['k.banji_id','=',$banji_id];
+		$data = Db::name('kaoshi_kaosheng')
+			->alias('k')
+			->join('student s','s.id = k.student_id')
+		    ->field($field)
+		    ->where($where)
+		    ->order($order)
+		    ->select()
+		    ->toArray();
+		return $data;
+	}
+	//列出参与考试的班级
+	public static function listKaoshiBanjis($kaoshi_id){
+		$field = 'b.id,b.name,b.bianhao';
+		$order = ['b.bianhao' => 'asc'];
+		$where = [];
+		$where[] = ['kaoshi_id','=',$kaoshi_id];
+		$data = Db::name('kaoshi_kaosheng')
+			->alias('k')
+			->join('banji b','b.id = k.banji_id')
+			->distinct(true)
+		    ->field($field)
+		    ->where($where)
+		    ->order($order)
+		    ->select()
+		    ->toArray();
+		return $data;
+	}
 	public static function listByKaoshiId($kaoshi_id)
 	{
 		$order = ['xuhao' => 'asc'];
