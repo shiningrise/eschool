@@ -17,7 +17,7 @@ class Kaoshi_kaoshengService{
     public static function list($where = [], $page = 1, $limit = 10,  $order = [], $field = '')
     {
         if (empty($field)) {
-            $field = 'k.id,k.student_id,s.name student_name,k.banji_id,b.name banji_name,kaoshi_id,mc2,mc1,zongfen,active,zhunkaozhenghao,zuoweihao,shichangnum,xuhao';
+            $field = 'k.id,k.student_id,s.xh student_xh,s.name student_name,k.banji_id,b.name banji_name,kaoshi_id,mc2,mc1,zongfen,active,zhunkaozhenghao,zuoweihao,shichangnum,xuhao';
         }
 
         if (empty($order)) {
@@ -103,7 +103,7 @@ class Kaoshi_kaoshengService{
 			->where('student_id',$student['id'])
 			->find();
 		if($kaosheng == null){
-			$data = ['kaoshi_id' => $kaoshi_id, 'banji_id' => $student['banji_id'],'student_id'=>$student['id']];
+			$data = ['kaoshi_id' => $kaoshi_id, 'banji_id' => $student['banji_id'],'student_id'=>$student['id'],'active'=>1];
 			Db::name('kaoshi_kaosheng')->insert($data);
 		}
 	    return 'ok';

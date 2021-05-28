@@ -13,6 +13,8 @@ use app\base\service\BanjiService;
 use app\base\service\StudentService;
 use app\chengji\validate\Kaoshi_kaoshengValidate;
 use hg\apidoc\annotation as Apidoc;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 /**
  * @Apidoc\Title("")
@@ -20,6 +22,79 @@ use hg\apidoc\annotation as Apidoc;
  */
 class KaoshiKaosheng extends BaseController
 {
+	
+	/**
+	 * @Apidoc\Title("导出考生")
+	 * @Apidoc\Param("kaoshi_id", type="int", default="0", desc="考试ID")
+	 * @Apidoc\Returned(ref="return"),
+	 * @Apidoc\Returned("data", type="object", desc="返回数据")
+	 */
+	public function outExcel(){
+		$kaoshi_id  = Request::param('kaoshi_id/d', 1);
+		$kaoshi = KaoshiService::info($kaoshi_id);
+		$kaoshengs = Kaoshi_kaoshengService::listByKaoshiId($kaoshi_id);
+		
+		$newExcel = new Spreadsheet();  //创建一个新的excel文档
+		$objSheet = $newExcel->getActiveSheet();  //获取当前操作sheet的对象
+		$objSheet->setTitle('考生');  //设置当前sheet的标题
+ 
+		$newExcel->getActiveSheet()->getColumnDimension('A')->setWidth('10');
+		$newExcel->getActiveSheet()->getColumnDimension('B')->setWidth('10');
+		$newExcel->getActiveSheet()->getColumnDimension('C')->setWidth('10');
+		$newExcel->getActiveSheet()->getColumnDimension('D')->setWidth('10');
+		$newExcel->getActiveSheet()->getColumnDimension('E')->setWidth('10');
+		$newExcel->getActiveSheet()->getColumnDimension('F')->setWidth('10');
+		$newExcel->getActiveSheet()->getColumnDimension('G')->setWidth('10');
+		$newExcel->getActiveSheet()->getColumnDimension('H')->setWidth('10');
+		
+		$objSheet->setCellValue('A1', '序号')
+			->setCellValue('B1', '姓名')
+			->setCellValue('C1', '准考证号')
+			->setCellValue('D1', '班级')
+			->setCellValue('E1', '考场')
+			->setCellValue('F1', '座位')
+			->setCellValue('G1', '学号')
+			->setCellValue('H1', '性别');
+		$count = count($kaoshengs);
+		for ($i = 2; $i <= $count+1; $i++) {
+			$student = StudentService::info($kaoshengs[$i-2]['student_id']);
+			$banji = BanjiService::info($kaoshengs[$i-2]['banji_id']);
+			
+			$objSheet->setCellValue('A' . $i, $kaoshengs[$i-2]['xuhao'])
+			->setCellValue('B' . $i, $student['name'])
+			->setCellValue('C' . $i, $kaoshengs[$i-2]['zhunkaozhenghao'])
+			->setCellValue('D' . $i, $banji['name'])
+			//->setCellValue('E' . $i, $kaoshengs[$i-2]['shichangnum'])
+			->setCellValue('G' . $i, $student['xh'])
+			->setCellValue('H' . $i, $student['sex']);
+			
+			$objSheet->getCell('F' . $i)->setValueExplicit($kaoshengs[$i-2]['zuoweihao'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+			$objSheet->getCell('E' . $i)->setValueExplicit($kaoshengs[$i-2]['shichangnum'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+		}
+		
+		header('Content-Type: application/vnd.ms-excel');
+		header("Content-Disposition: attachment;filename=".$kaoshi['name'].'考生'.".xls");
+		header('Cache-Control: max-age=0');
+		$objWriter = IOFactory::createWriter($newExcel, 'Xls');
+		$objWriter->save('php://output');
+		
+		return success();
+	}
+	
+	/**
+	 * @Apidoc\Title("批量添加考生")
+	 * @Apidoc\Param("ids", type="int[]", default="[]", desc="考生ID数组")
+	 * @Apidoc\Returned(ref="return"),
+	 * @Apidoc\Returned("data", type="object", desc="返回数据")
+	 */
+	public function multiDelete(){
+		$ids   	= input("post.ids/a");
+		foreach($ids as $id){
+			Kaoshi_kaoshengService::del($id);
+		}
+		return success();
+	}
+	
 	/**
 	 * @Apidoc\Title("生成试场座位表")
 	 * @Apidoc\Param("kaoshi_id", type="int", default="0", desc="考试ID")
@@ -31,15 +106,21 @@ class KaoshiKaosheng extends BaseController
 		$kaoshi = KaoshiService::info($kaoshi_id);
 		$kaoshengs = Kaoshi_kaoshengService::listByKaoshiId($kaoshi_id);
 		$shichangs = Kaoshi_shichangService::getByKaoshiId($kaoshi_id);
+		$renshu = 0;
+		foreach($shichangs as $shichang){
+			$renshu += $shichang['renshu'];
+		}
+		$kaoshengCount = count($kaoshengs);
+		if($renshu !=$kaoshengCount){
+			error('操作失败。试场安排的人数是'.$renshu .'人'.'实际考生人数为'.$kaoshengCount .'人');
+		}
 		$i=0;
 		foreach($shichangs as $shichang){
 			for($j=1;$j<=$shichang['renshu'];$j++){
 				$kaoshengs[$i]['shichangnum']=$shichang['num'];
 				$kaoshengs[$i]['zuoweihao']=str_pad($j,2,"0",STR_PAD_LEFT);
 				$kaoshengs[$i]['zhunkaozhenghao']=$kaoshi['pernum'].$kaoshengs[$i]['shichangnum'].$kaoshengs[$i]['zuoweihao'];
-				Db::name('kaoshi_kaosheng')
-				    ->where('id',$kaoshengs[$i]['id'])
-				    ->update($kaoshengs[$i]);
+				Db::name('kaoshi_kaosheng')->where('id',$kaoshengs[$i]['id'])->update($kaoshengs[$i]);
 				$i++;
 			}
 		}
