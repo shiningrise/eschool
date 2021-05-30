@@ -6,7 +6,16 @@ use app\admin\service\RoleService;
 use app\admin\service\UserService;
 
 class StudentService{
-	
+
+    //根据学号获取学生
+	public static function getByXh($xh)
+	{
+		$student = Db::name('student')
+		    ->where('xh',$xh)
+			->find();
+		return $student;
+	}
+
 	public static function listByBanjiId($banji_id)
 	{
 		$order = ['xh' => 'asc'];
