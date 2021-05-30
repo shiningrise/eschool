@@ -264,9 +264,13 @@ class Teacher extends BaseController
                 //跳出循环
                 break;
             }
-            validate(TeacherValidate::class)->scene('import')->check($data);
+            $teacher = Db::name('teacher')
+                    ->where('username',$data['username'])
+                    ->find();
+            //validate(TeacherValidate::class)->scene('import')->check($data);
             //插入数据库
-            Db::name('teacher')->insert($data);
+            if(empty($teacher))
+                Db::name('teacher')->insert($data);
         }
         return success();
     }
