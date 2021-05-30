@@ -38,10 +38,10 @@ class UserlogMiddleware
                     $log['response_code'] = $response_data['code'];
                 }
                 if (isset($response_data['msg'])) {
-                    $log['response_msg'] = $response_data['msg'];
+                    $log['response_msg'] = substr($response_data['msg'],0,250);
                 } else {
                     if (isset($response_data['message'])) {
-                        $log['response_msg'] = $response_data['message'];
+                        $log['response_msg'] = substr($response_data['message'],0,250);
                     }
                 }
                 

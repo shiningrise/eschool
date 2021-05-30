@@ -273,7 +273,8 @@ class Student extends BaseController
             if($banji){
                 $data['banji_id']=$banji['id'];
             }else{
-				exception('学生不能没有班级');
+				//exception('找不到班级'.$banji_name);
+				return error($data['xh'].$data['name'].'的班级'.$banji_name.'找不到');
 			}
             //防止出现空白Excel导致mysql报错，对数据做下判断
             if(empty($data['xh']) && empty($data['name'])){
