@@ -1,9 +1,39 @@
 <?php
 namespace app\chengji\service;
 use think\facade\Db;
+use think\facade\Log;
 use think\facade\Filesystem;
 
 class Kaoshi_chengjiService{
+	
+	public static function listChengjiHuizong($kaoshi_id,$banji_id){
+		$field = 'k.id,k.student_id,s.xh student_xh,s.name student_name,k.banji_id,b.name banji_name,kaoshi_id,mc_banji,mc_school,zongfen,active,zhunkaozhenghao,zuoweihao,shichangnum,xuhao';
+		$where[] = ['kaoshi_id','=',$kaoshi_id];
+		if($banji_id){
+			$where[] = ['kaoshi_kaosheng.banji_id','=',$banji_id];
+		}
+		$kaoshengs = Db::name('kaoshi_kaosheng')
+			->alias('k')
+			->join('banji b','b.id = k.banji_id')
+			->join('student s','k.student_id = s.id')
+            ->field($field)
+            ->where($where)
+            ->order('s.xh','asc')
+            ->select()
+            ->toArray();
+		foreach($kaoshengs as &$kaosheng){
+			$cj =Db::name('kaoshi_chengji')->where('kaosheng_id',$kaosheng['id'])->select()->toArray();
+			$chengji=[];
+			foreach($cj as $c){
+				$chengji[$c['xueke_id']]=$c['fenshu'];
+			}
+			$kaosheng['chengji']=$chengji;
+		}
+		$data['kaoshengs']=$kaoshengs;
+		$data['xuekes']=Kaoshi_xuekeService::getByKaoshiId($kaoshi_id);
+		return $data;
+	}
+	
     public static function list($where = [], $page = 1, $limit = 10,  $order = [], $field = '')
     {
         if (empty($field)) {
@@ -94,6 +124,13 @@ class Kaoshi_chengjiService{
         $banjis = Kaoshi_kaoshengService::listKaoshiBanjis($kaoshi_id);
         foreach($xuekes as $xueke)
         {
+			
+			$dbtongji = Db::name('kaoshi_chengji')
+			    ->where('kaoshi_id',$kaoshi_id)
+			    ->where('xueke_id',$xueke['xueke_id'])
+				->field('std(fenshu) std,avg(fenshu) avg')
+			    ->select()
+			    ->toArray();
             //求段名次
             $chengjis = Db::name('kaoshi_chengji')
                 ->where('kaoshi_id',$kaoshi_id)
@@ -112,7 +149,8 @@ class Kaoshi_chengjiService{
                 else{
                     $chengjis[$i]['mc_school'] = $i+1;
                 }
-                Db::name('kaoshi_chengji')->where('id',$chengjis[$i]['id'])->update(['mc_school' => $chengjis[$i]['mc_school']]);
+				$chengjis[$i]['tscore'] = ($chengjis[$i]['fenshu']-$dbtongji[0]['avg'])/$dbtongji[0]['std'];
+                Db::name('kaoshi_chengji')->where('id',$chengjis[$i]['id'])->update(['mc_school' => $chengjis[$i]['mc_school'],'tscore'=>$chengjis[$i]['tscore']]);
             }
 
             //求班名次
@@ -136,10 +174,71 @@ class Kaoshi_chengjiService{
                     else{
                         $chengjis[$i]['mc_banji'] = $i+1;
                     }
+					
                     Db::name('kaoshi_chengji')->where('id',$chengjis[$i]['id'])->update(['mc_banji' => $chengjis[$i]['mc_banji']]);
                 }
             }
         }
         return '';
     }
+	
+	//统计考生总分与名次
+	public static function tongjiZongfen($kaoshi_id)
+	{
+	    $banjis = Kaoshi_kaoshengService::listKaoshiBanjis($kaoshi_id);
+		//求总分
+		$kaoshengs = Kaoshi_kaoshengService::listByKaoshiId($kaoshi_id);
+		foreach($kaoshengs as $kaosheng){
+			$zongfen = Db::name('kaoshi_chengji')
+			    ->where('kaosheng_id',$kaosheng['id'])
+			    ->sum('fenshu');
+			$kaosheng['zongfen'] = $zongfen;
+			Db::name('kaoshi_kaosheng')->where('id',$kaosheng['id'])->update(['zongfen' => $kaosheng['zongfen']]);
+		}
+	    //求段名次
+	    $kaoshengs = Db::name('kaoshi_kaosheng')
+	        ->where('kaoshi_id',$kaoshi_id)
+	        ->order('zongfen','desc')
+	        ->select()
+	        ->toArray();
+	    $i=0;
+	    $lastFenshu = -1;
+	    $count = count($kaoshengs);
+	    for($i=0;$i<$count;$i++){
+	        if($kaoshengs[$i]['zongfen'] == $lastFenshu){
+	            $kaoshengs[$i]['mc_school'] = $kaoshengs[$i-1]['mc_school'];
+	            $lastFenshu=$kaoshengs[$i]['zongfen'];
+	        }
+	        else{
+	            $kaoshengs[$i]['mc_school'] = $i+1;
+	        }
+	        Db::name('kaoshi_kaosheng')->where('id',$kaoshengs[$i]['id'])->update(['mc_school' => $kaoshengs[$i]['mc_school']]);
+	    }
+	    	
+	    //求班名次
+	    foreach($banjis as $banji)
+	    {
+	        $kaoshengs = Db::name('kaoshi_kaosheng')
+	                ->where('kaoshi_id',$kaoshi_id)
+	                ->where('banji_id',$banji['id'])
+	                ->order('zongfen','desc')
+	                ->select()
+	                ->toArray();
+	        $i=0;
+	        $lastFenshu = -1;
+	        $count = count($kaoshengs);
+	        for($i=0;$i<$count;$i++){
+	            if($kaoshengs[$i]['zongfen'] == $lastFenshu){
+	                $kaoshengs[$i]['mc_school'] = $kaoshengs[$i-1]['mc_school'];
+	                $lastFenshu=$kaoshengs[$i]['zongfen'];
+	            }
+	            else{
+	                $kaoshengs[$i]['mc_banji'] = $i+1;
+	            }
+	    		
+	            Db::name('kaoshi_kaosheng')->where('id',$kaoshengs[$i]['id'])->update(['mc_banji' => $kaoshengs[$i]['mc_banji']]);
+	        }
+	    }
+	    return '';
+	}
 }

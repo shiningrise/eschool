@@ -57,6 +57,7 @@ class Kaoshi_kaoshengService{
 		    ->toArray();
 		return $data;
 	}
+
 	public static function listByKaoshiId($kaoshi_id)
 	{
 		$order = ['xuhao' => 'asc'];

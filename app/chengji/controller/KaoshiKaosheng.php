@@ -139,7 +139,7 @@ class KaoshiKaosheng extends BaseController
 	}
 	
 	/**
-	 * @Apidoc\Title("批量添加考生")
+	 * @Apidoc\Title("批量删除考生")
 	 * @Apidoc\Param("ids", type="int[]", default="[]", desc="考生ID数组")
 	 * @Apidoc\Returned(ref="return"),
 	 * @Apidoc\Returned("data", type="object", desc="返回数据")
