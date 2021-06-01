@@ -137,7 +137,7 @@ class Pingjiao extends BaseController
     }
 	
 	/**
-	 * @Apidoc\Title("删除")
+	 * @Apidoc\Title("复制")
 	 * @Apidoc\Method("POST")
 	 * @Apidoc\Header(ref="headerAdmin")
 	 * @Apidoc\Param("id", type="int", default="1", desc="id")

@@ -55,8 +55,8 @@ class UserlogService
         foreach ($list as $k => $v) {
             $list[$k]['username'] = '';
             $list[$k]['fullname'] = '';
-            $user = UserService::info($v['user_id']);
-            if ($user) {
+            $user = UserService::getById($v['user_id']);
+            if (!empty($user)) {
                 $list[$k]['username'] = $user['username'];
                 $list[$k]['fullname'] = $user['fullname'];
             }

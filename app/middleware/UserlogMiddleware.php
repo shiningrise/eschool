@@ -25,12 +25,20 @@ class UserlogMiddleware
      */
     public function handle($request, Closure $next)
     {
-        $response = $next($request);
+		
+		
+		
+        
 
         $is_log = Config::get('admin.is_log');
-
         if ($is_log) {
-            $user_id = user_id();
+			$user_id = user_id();
+			$log['user_id'] = $user_id;
+			
+			UserlogService::add($log);
+			
+			$response = $next($request);
+
             if ($user_id) {
                 $response_data = $response->getData();
                 
@@ -45,11 +53,10 @@ class UserlogMiddleware
                     }
                 }
                 
-                $log['user_id'] = $user_id;
                 UserlogService::add($log);
             }
         }
-
+		
         return $response;
     }
 }

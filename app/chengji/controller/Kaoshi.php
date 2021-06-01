@@ -161,5 +161,19 @@ class Kaoshi extends BaseController
 
         return success($data);
     }
+	
+	/**
+	 * @Apidoc\Title("复制")
+	 * @Apidoc\Method("POST")
+	 * @Apidoc\Header(ref="headerAdmin")
+	 * @Apidoc\Param("id", type="int", default="1", desc="id")
+	 * @Apidoc\Returned(ref="return")
+	 */
+	public function copy()
+	{
+	    $param['id'] = Request::param('id/d', '');
+	    $data = KaoshiService::copy($param['id']);
+	    return success($data);
+	}
 }
 

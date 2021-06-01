@@ -65,7 +65,19 @@ class UserService{
         return $data;
     }
 
-    
+    /**
+     * 用户信息
+     *
+     * @param integer $id 用户id
+     * 
+     * @return array
+     */
+    public static function getById($id)
+    {
+        $user = UserModel::find($id);
+        return $user;
+    }
+	
     /**
      * 用户信息
      *

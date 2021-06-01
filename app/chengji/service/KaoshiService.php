@@ -83,4 +83,25 @@ class KaoshiService{
         return $id;
     }
 
+	public static function copy($id)
+    {
+        $kaoshi = Db::name('kaoshi')->find($id);
+		$oldId = $kaoshi['id'];
+		unset($kaoshi['id']);
+		$kaoshi['name'] .= '复制';
+		$id = Db::name('kaoshi')->insertGetid($kaoshi);
+		$xuekes = Db::name('kaoshi_xueke')->where('kaoshi_id',$oldId)->select()->toArray();
+		foreach($xuekes as $xueke){
+			unset($xueke['id']);
+			$xueke['kaoshi_id'] = $id;
+			Db::name('kaoshi_xueke')->insert($xueke);
+		}
+		$shichangs = Db::name('kaoshi_shichang')->where('kaoshi_id',$oldId)->select()->toArray();
+		foreach($shichangs as $shichang){
+			unset($shichang['id']);
+			$shichang['kaoshi_id'] = $id;
+			Db::name('kaoshi_shichang')->insert($shichang);
+		}
+        return $id;
+    }
 }

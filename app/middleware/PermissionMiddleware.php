@@ -26,18 +26,17 @@ class PermissionMiddleware
      */
     public function handle($request, Closure $next)
     {
-        $response = $next($request);
-
         $module_url       = request_pathinfo();
         $user_id = user_id();
         $api_white_list = Config::get('admin.api_white_list');
         $urls = ModuleService::getModuleUrlByUserId($user_id);
         if(!in_array($module_url, $api_white_list) && !in_array($module_url, $urls))
         {
-            http_response_code(403);
-            error("无权访问");
-            //exit();
+            //http_response_code(403);
+            return error("无权访问");
+            exit();
         }
+		$response = $next($request);
         return $response;
     }
 }
