@@ -21,15 +21,15 @@ return [
             // 数据库类型
             'type'            => env('database.type', 'mysql'),
             // 服务器地址
-            'hostname'        => env('database.hostname', '106.14.212.3'),
+            'hostname'        => env('database.hostname', '数据库网址'),
             // 数据库名
-            'database'        => env('database.database', 'eschool'),
+            'database'        => env('database.database', '数据库名称'),
             // 用户名
-            'username'        => env('database.username', 'root'),
+            'username'        => env('database.username', '数据库用户名'),
             // 密码
-            'password'        => env('database.password', 'VEve0FcqezcIWuiH'),
+            'password'        => env('database.password', '数据库密码'),
             // 端口
-            'hostport'        => env('database.hostport', '3308'),
+            'hostport'        => env('database.hostport', '3306'),
             // 数据库连接参数
             'params'          => [],
             // 数据库编码默认采用utf8
