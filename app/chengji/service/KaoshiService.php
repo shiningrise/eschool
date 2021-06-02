@@ -94,6 +94,7 @@ class KaoshiService{
 		foreach($xuekes as $xueke){
 			unset($xueke['id']);
 			$xueke['kaoshi_id'] = $id;
+			unset($xueke['shijian']);
 			Db::name('kaoshi_xueke')->insert($xueke);
 		}
 		$shichangs = Db::name('kaoshi_shichang')->where('kaoshi_id',$oldId)->select()->toArray();
