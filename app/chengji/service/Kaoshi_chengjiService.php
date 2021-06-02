@@ -6,6 +6,42 @@ use think\facade\Filesystem;
 
 class Kaoshi_chengjiService{
 	
+	//列出我的成绩汇总
+	public static function listMyChengjiHuizong($student_id){
+		$field = 'k.id,ks.name kaoshi_name,k.student_id,s.xh student_xh,s.name student_name,k.banji_id,b.name banji_name,kaoshi_id,mc_banji,mc_school,zongfen,active,zhunkaozhenghao,zuoweihao,shichangnum,xuhao';
+		$where[] = ['student_id','=',$student_id];
+		$kaoshengs = Db::name('kaoshi_kaosheng')
+			->alias('k')
+			->join('banji b','b.id = k.banji_id')
+			->join('student s','k.student_id = s.id')
+			->join('kaoshi ks','k.kaoshi_id = ks.id')
+	        ->field($field)
+	        ->where($where)
+	        ->order('s.xh','asc')
+	        ->select()
+	        ->toArray();
+		foreach($kaoshengs as &$kaosheng){
+			$cj =Db::name('kaoshi_chengji')->where('kaosheng_id',$kaosheng['id'])->select()->toArray();
+			$chengji=[];
+			foreach($cj as $c){
+				$chengji[$c['xueke_id']]=$c['fenshu'];
+			}
+			$kaosheng['chengji']=$chengji;
+		}
+		$data['kaoshengs']=$kaoshengs;
+		$data['xuekes']=self::listXuekesByStudentId($student_id);
+		return $data;
+	}
+	
+	public static function listXuekesByStudentId($student_id){
+		$xuekes = Db::table('xueke')
+		    ->where('id', 'IN', function ($query)use ($student_id) {
+		        $query->table('kaoshi_chengji')->where('student_id',$student_id)->field('xueke_id');
+		    })
+		    ->select()->toArray();
+		return $xuekes;
+	}
+	
 	public static function listChengjiHuizong($kaoshi_id,$banji_id){
 		$field = 'k.id,k.student_id,s.xh student_xh,s.name student_name,k.banji_id,b.name banji_name,kaoshi_id,mc_banji,mc_school,zongfen,active,zhunkaozhenghao,zuoweihao,shichangnum,xuhao';
 		$where[] = ['kaoshi_id','=',$kaoshi_id];

@@ -25,6 +25,20 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
  */
 class KaoshiChengji extends BaseController
 {
+	
+	/**
+	 * @Apidoc\Title("列出我的成绩汇总")
+	 * @Apidoc\Returned(ref="return"),
+	 * @Apidoc\Returned("data", type="object", desc="返回数据")
+	 */
+	public function listMyChengjiHuizong()
+	{
+		$user_id = user_id();
+		$student = StudentService::getByUsrId($user_id);
+	    $data = Kaoshi_chengjiService::listMyChengjiHuizong($student['id']);
+	    return success($data);
+	}
+	
 	/**
 	 * @Apidoc\Title("列出成绩汇总")
 	 * @Apidoc\Param("kaoshi_id", type="int", default="0", desc="kaoshi_id")
