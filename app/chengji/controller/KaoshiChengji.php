@@ -27,6 +27,19 @@ class KaoshiChengji extends BaseController
 {
 	
 	/**
+	 * @Apidoc\Title("列出我的学生成绩汇总")
+	 * @Apidoc\Param("student_id", type="int", default="0", desc="student_id")
+	 * @Apidoc\Returned(ref="return"),
+	 * @Apidoc\Returned("data", type="object", desc="返回数据")
+	 */
+	public function listMyStudentChengjiHuizong()
+	{
+		$student_id       = Request::param('student_id/d', 0);
+	    $data = Kaoshi_chengjiService::listMyChengjiHuizong($student_id);
+	    return success($data);
+	}
+	
+	/**
 	 * @Apidoc\Title("列出我的成绩汇总")
 	 * @Apidoc\Returned(ref="return"),
 	 * @Apidoc\Returned("data", type="object", desc="返回数据")

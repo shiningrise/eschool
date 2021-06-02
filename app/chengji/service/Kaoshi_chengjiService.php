@@ -38,6 +38,7 @@ class Kaoshi_chengjiService{
 		    ->where('id', 'IN', function ($query)use ($student_id) {
 		        $query->table('kaoshi_chengji')->where('student_id',$student_id)->field('xueke_id');
 		    })
+			->order('code','asc')
 		    ->select()->toArray();
 		return $xuekes;
 	}
